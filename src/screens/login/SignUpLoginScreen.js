@@ -10,8 +10,6 @@ import { signUpUser } from '../../redux/actions/authActions'
 
 const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => {
 
-    console.log(route.params);
-    console.log(error);
 
     const [signUpRequest, setSignUpRequest] = useState({
         username: '',
@@ -21,7 +19,6 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
         userInfo: route.params
     })
 
-    console.log(signUpUser);
     console.log(error);
 
 

@@ -33,7 +33,7 @@ export const fetchUser = () => {
                 const user = await AsyncStorage.getItem('traccUser')
                 if(user) {
                     console.log('user found');
-                    dispatch(loginUserSuccess(user))
+                    dispatch(loginUserSuccess(JSON.parse(user)))
                 } else {
                     console.log('user not found');
                     dispatch(loginUserError('test'))
@@ -85,9 +85,9 @@ export const signUpUser = request => {
         dispatch(loginUserRequest())
         const endpoint = `${API_BASE}/api/auth/signup`
             console.log(endpoint);
+            console.log('sign up user');
             axios.post(endpoint, request) /* /api/auth/signin */
              .then(response => {
-                 console.log('haha');
                  console.log(response.data)
                  const user = response.data
 
