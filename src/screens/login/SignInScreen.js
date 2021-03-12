@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/AntDesign';
 import Divider from 'react-native-divider'
+import { colors } from '../../colors'
 
 const SignInScreen = ({navigation, user, loading, error, loginUser}) => {
 
@@ -48,7 +49,7 @@ const SignInScreen = ({navigation, user, loading, error, loginUser}) => {
             <SafeAreaView style={{flex: 1, alignItems: 'center'}}>
                 <SplashScreenHeader />
             </SafeAreaView>
-            <KeyboardAvoidingView style={{flex: 1, alignItems: 'center'}}>
+            <KeyboardAvoidingView style={{flex: 1, alignItems: 'center',}}>
                 <Input placeholder="Username"
                         leftIcon={
                             <Icon name='user'
@@ -107,11 +108,11 @@ const styles = StyleSheet.create({
         width: device_width * 0.8, 
         height: 40,
         borderRadius: 40, 
-        borderColor: 'black',
+        borderColor: colors.smokyblack,
      /*    width: 450, */
     },
     buttonTitleStyle: {
-        color: '#e07f4c', 
+        color: colors.riflegreen, 
         /* fontSize: 15, 
         fontWeight: '900' */
     },
@@ -129,7 +130,8 @@ const styles = StyleSheet.create({
         opacity: 0.6, 
         borderRadius: 25, 
         marginBottom: -12,
-        width: device_width * 0.8
+        width: device_width * 0.8,
+        alignSelf: 'center'
     },
 })
 

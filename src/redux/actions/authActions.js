@@ -1,25 +1,31 @@
 import { API_BASE } from "../../utils/api"
-import { FETCH_USER, LOGIN_USER, LOGIN_USER_ERROR, LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, REGISTER_USER } from "../actiontypes/authActionTypes"
+import { FETCH_USER, LOGIN_USER, LOGIN_USER_ERROR, LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGOUT_USER_SUCCESS, REGISTER_USER } from "../actiontypes/authActionTypes"
 import axios from 'axios'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
- const loginUserRequest = () => {
+const loginUserRequest = () => {
     return {
         type: LOGIN_USER_REQUEST,
     }
 }
 
- const loginUserSuccess = user => {
+const loginUserSuccess = user => {
     return {
         type: LOGIN_USER_SUCCESS,
         payload: user,
     }
 }
 
- const loginUserError = error => {
+const loginUserError = error => {
     return {
         type: LOGIN_USER_ERROR,
         payload: error,
+    }
+}
+
+const logoutUserSuccess = () => {
+    return {
+        type: LOGOUT_USER_SUCCESS,
     }
 }
 
@@ -46,6 +52,17 @@ export const fetchUser = () => {
     }
 }
 
+export const logoutUser = () => {
+    return async function(dispatch) {
+        try {
+            const user = await AsyncStorage.removeItem('traccUser')
+            dispatch(logoutUserSuccess())
+        } catch(e) {
+            console.log(e)
+        }
+    }
+}
+
 export const loginUser = request => {
     return function(dispatch) {
         console.log(request);
@@ -64,6 +81,7 @@ export const loginUser = request => {
 
                  try {
                      AsyncStorage.setItem('traccUser', JSON.stringify(user))
+                     AsyncStorage.setItem('traccToken', user.accessToken)
                  } catch(e) {
                      console.log(e);
                      throw e

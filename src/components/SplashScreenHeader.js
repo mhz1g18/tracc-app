@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         fontWeight: '900'
     },
     title: {
-        color: colors.blue,
+        color: colors.riflegreen,
         fontSize: 35,
         fontWeight: 'bold',
         fontFamily: 'sans-serif-thin'

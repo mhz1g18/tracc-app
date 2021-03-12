@@ -66,8 +66,7 @@ const SignUpInfoScreen = ({navigation,}) => {
         <SplashScreenContainer>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.headerTextStyle}> Tell us more </Text>
-                    <Text style={styles.headerTextStyle}> about yourself </Text>
+                    <Text style={styles.headerTextStyle}> Tell us more about yourself </Text>
                 </View>
                 <KeyboardAvoidingView style={styles.footer}>
                     <Input placeholder="First and last name"
@@ -139,11 +138,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
-        alignSelf: 'flex-start', 
+        width: device_width * 0.8,
         justifyContent: 'flex-start',
     },
     footer: {
-        paddingTop: 30, 
+        paddingTop: 20, 
         alignItems: 'center',
     },
     signInButton: {
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
      /*    width: 450, */
     },
     buttonTitleStyle: {
-        color: '#e07f4c', 
+        color: colors.riflegreen, 
         /* fontSize: 15, 
         fontWeight: '900' */
     },
@@ -180,9 +179,8 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     headerTextStyle: {
-        color: colors.blue,
-        fontSize: 26,
-        paddingLeft: 10,
+        color: colors.smokyblack,
+        fontSize: 20,
         fontWeight: 'bold',
         fontFamily: 'sans-serif-thin',
     }

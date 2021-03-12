@@ -1,27 +1,17 @@
 import React from 'react'
-import { Text } from 'react-native'
-import SplashScreenContainer from '../../../components/SplashScreenContainer'
-import {Header} from 'react-native-elements'
-import { colors } from '../../../colors'
+import { createStackNavigator } from '@react-navigation/stack'
+import MainHomeScreen from './main/MainHomeScreen'
+import StatsScreen from '../../specific/StatsScreen'
+
+const Stack = createStackNavigator()
 
 const HomeTabScreen = props => {
 
-    const handleOpenDrawer = () => props.navigation.openDrawer()
-
     return (
-        <>
-            <Header
-            placement="center"
-            backgroundColor={colors.peach}
-            leftComponent={{icon: 'menu', color: '#fff', onPress: handleOpenDrawer}}
-            centerComponent={{ text: props.route.name, style: { color: '#fff' } }}
-            rightComponent={{ icon: 'home', color: '#fff' }}
-            />
-            <SplashScreenContainer>
-                <Text> home tab screen</Text>
-            </SplashScreenContainer>
-
-        </>
+        <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
+            <Stack.Screen name='Home' component={MainHomeScreen}/>
+            <Stack.Screen name='Sleep' component={StatsScreen}/>
+        </Stack.Navigator>
     )
 }
 

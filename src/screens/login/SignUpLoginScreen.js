@@ -44,8 +44,7 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
         <SplashScreenContainer>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.headerTextStyle}> Now, choose </Text>
-                    <Text style={styles.headerTextStyle}> your sign-in method </Text>
+                    <Text style={styles.headerTextStyle}>Now, choose your  sign-in method </Text>
                 </View>
                 <KeyboardAvoidingView style={styles.footer}>
                     <Input placeholder="Username"
@@ -100,11 +99,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
-        alignSelf: 'flex-start',
+        width: device_width * 0.8,
         justifyContent: 'flex-start',
     },
     footer: {
-        paddingTop: 30, 
+        paddingTop: 20, 
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
     },
     buttonTitleStyle: {
-        color: '#e07f4c', 
+        color: colors.riflegreen, 
     },
     inputStyle: {
         fontSize:14, 
@@ -139,8 +138,8 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     headerTextStyle: {
-        color: colors.blue,
-        fontSize: 26,
+        color: colors.smokyblack,
+        fontSize: 20    ,
         paddingLeft: 10,
         fontWeight: 'bold',
         fontFamily: 'sans-serif-thin',

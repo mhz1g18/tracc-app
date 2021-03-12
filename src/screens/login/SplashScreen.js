@@ -36,13 +36,13 @@ const SplashScreen = ({navigation, fetchUser, user, loading, error}) => {
 
                     <View style={styles.footer}>
                     <Button title="GET STARTED" 
-                            type='outline' 
+                            type='solid' 
                             onPress={getStartedHandler}
                             titleStyle={styles.buttonTitleStyle}
                             buttonStyle={styles.buttonStyle}/>
                     <View style={{marginTop: 10,}}></View>
                     <Button title="SIGN IN" 
-                            type='outline' 
+                            type='solid' 
                             onPress={signInHandler}
                             titleStyle={{...styles.buttonTitleStyle, color: 'black'}}
                             buttonStyle={styles.buttonStyle}/>
@@ -50,7 +50,7 @@ const SplashScreen = ({navigation, fetchUser, user, loading, error}) => {
                 </> 
                 :
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size='large' color={colors.blue}/>
+                    <ActivityIndicator size='large' color={colors.riflegreen}/>
                 </View>
             }
         </SplashScreenContainer>
@@ -90,22 +90,23 @@ const styles = StyleSheet.create({
         /* justifyContent: 'center', */
     },
     header: {
-        marginTop: '10%',
         alignItems:'center', 
         flex: 1,
     },
     footer: {
-        flex: 1,
+        flex: 2,
         alignItems: 'center',
     },
     buttonTitleStyle: {
-        color: colors.blue, 
+        color: colors.riflegreen, 
         fontSize: 15, 
         fontWeight: '900'
     },
     buttonStyle: {
         backgroundColor: 'white', 
         width: device_width * 0.8, 
+        borderColor: colors.smokyblack,
+        borderWidth: 0,
         height: 45, 
         borderRadius: 25, 
     },
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif-thin'
     },
     title: {
-        color: colors.blue,
+        color: colors.smokyblack,
         fontSize: 50
     },
     header: {
