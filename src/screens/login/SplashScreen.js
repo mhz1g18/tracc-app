@@ -25,7 +25,7 @@ const SplashScreen = ({navigation, fetchUser, user, loading, error}) => {
 
 
     return (
-        <SplashScreenContainer>
+        <SplashScreenContainer statusBar>
             {
                 !loading ?
                 <>

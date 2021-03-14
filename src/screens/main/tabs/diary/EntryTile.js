@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import TouchableScale from 'react-native-touchable-scale'
 import * as Animatable from 'react-native-animatable'
 import EntryInfoWrapper from './EntryInfoWrapper'
+import { useNavigation } from '@react-navigation/core'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -18,9 +19,10 @@ const cardScreens = {
     'ENTRY_NUTRITION' : 'Nutrition',
 }
 
-const EntryTile = ({navigation, entry, delay}) => {  
+const EntryTile = ({entry,}) => {  
 
     const GRADIENT_COLORS = cardColors[entry.type]
+    const navigation = useNavigation()
 
     const onPressHandler = () => { 
         const screenName = cardScreens[entry.type]

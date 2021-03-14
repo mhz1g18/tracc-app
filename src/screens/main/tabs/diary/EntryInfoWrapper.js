@@ -48,12 +48,12 @@ const EntryInfoWrapper = ({entry}) => {
                 <>
                     <View style={{flexDirection: 'row', }}>
                         <Icon type='material-community' name='fire' size={20} style={{paddingTop: 2}}/>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 15,}}>{entry.calories} calories</Text>
+                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 15,}}>{entry.calories.toFixed(2)} calories</Text>
                     </View>
                     <View style={{flexDirection: 'row', }}>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.protein} p</Text>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.carbs} c</Text>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.fats} f</Text>
+                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.protein.toFixed(2)} p</Text>
+                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.carbs.toFixed(2)} c</Text>
+                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.fats.toFixed(2)} f</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <Text style={{fontStyle: 'italic'}}>at {new Date(entry.timestamp).toTimeString().slice(0, -12)}</Text>

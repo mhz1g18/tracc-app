@@ -16,7 +16,7 @@ const loginUserSuccess = user => {
     }
 }
 
-const loginUserError = error => {
+export const loginUserError = error => {
     return {
         type: LOGIN_USER_ERROR,
         payload: error,
@@ -42,7 +42,7 @@ export const fetchUser = () => {
                     dispatch(loginUserSuccess(JSON.parse(user)))
                 } else {
                     console.log('user not found');
-                    dispatch(loginUserError('test'))
+                    dispatch(loginUserError(''))
                 }
             } catch(e) {
                 console.log(e)
@@ -55,7 +55,7 @@ export const fetchUser = () => {
 export const logoutUser = () => {
     return async function(dispatch) {
         try {
-            const user = await AsyncStorage.removeItem('traccUser')
+            await AsyncStorage.removeItem('traccUser')
             dispatch(logoutUserSuccess())
         } catch(e) {
             console.log(e)
@@ -91,7 +91,7 @@ export const loginUser = request => {
              })
              .catch(error => {
                  console.log(error);
-                 dispatch(loginUserError(error))
+                 dispatch(loginUserError(error.message))
              })
     }
 }
@@ -110,7 +110,7 @@ export const signUpUser = request => {
                  const user = response.data
 
                 if(!(user.accessToken)) {
-                    throw Error('Some error stuff')
+                    throw Error('There was an error')
                 }
 
                  try {
@@ -124,7 +124,7 @@ export const signUpUser = request => {
              })
              .catch(error => {
                  console.log(error);
-                 dispatch(loginUserError(error))
+                 dispatch(loginUserError(error.message))
              })
     }
 }

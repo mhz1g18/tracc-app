@@ -3,26 +3,18 @@ import { TouchableOpacity } from 'react-native'
 import { View, Text } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import { Avatar, ListItem, Icon, Badge, Input } from 'react-native-elements';
-import { useSelector } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
 import { colors } from '../colors'
 import { TabContext } from '../screens/main/tabs/nutrition/TabContext';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { units } from '../utils/units';
+import { addEntry, removeEntry } from '../redux/actions/nutritionEntryActions';
 
-const NutritionEntryCard = ({item, onAdd, onEdit, onRemove}) => {
+const NutritionEntryCard = ({item, searchResult, onIconPress}) => {
 
     const [collaped, setCollaped] = useState(true)
-
-    console.log('quantity in card is ' + item.quantity)
-
     const [quantity, setQuantity] = useState(item.quantity || 100)
-
-    const { deleteItemHandler } = useContext(TabContext)
-
-    const addToListHandler = () => {
-        onAdd(item, item.unit, quantity)
-    }
 
     const toggleExpansion = () => {
         setCollaped(exp => !exp)
@@ -30,19 +22,14 @@ const NutritionEntryCard = ({item, onAdd, onEdit, onRemove}) => {
 
     const onInputHandler = input => {
         setQuantity(parseInt(input))
-        if(onEdit) {
-            //onEdit(item, item.quantity, quantity)
-            //onEdit(item, item.unit, parseInt(input))
-            console.log(onEdit);
-        }
     }
-/* 
+
     useEffect(() => {
-        if(onEdit) {
-            onEdit(item, item.quantity, quantity)
-        }
+        item.quantity = quantity
+
+
     }, [quantity])
- */
+
     return (
         <TouchableOpacity style={{flex: 1, }} onPress={toggleExpansion}>
             <View style={{flexDirection: 'row', width: '100%', backgroundColor: 'white',}}>
@@ -65,8 +52,8 @@ const NutritionEntryCard = ({item, onAdd, onEdit, onRemove}) => {
                                                 item.type === 'FOOD'
                                                 ?
                                                 <React.Fragment>
-                                                <ListItem.Title>{item.calories} calories</ListItem.Title>
-                                                <ListItem.Subtitle>{item.carbs} carbs {item.protein} protein {item.fats} fat</ListItem.Subtitle>
+                                                <ListItem.Title>{item.calories * quantity / 100} calories</ListItem.Title>
+                                                <ListItem.Subtitle>{item.carbs * quantity / 100} carbs {item.protein* quantity / 100} protein {item.fats* quantity / 100} fat</ListItem.Subtitle>
                                                 <View style={{marginTop: 1}}>
                                                 {
                                                     item.micronutrients?.map(macro => {
@@ -85,29 +72,36 @@ const NutritionEntryCard = ({item, onAdd, onEdit, onRemove}) => {
                                             </View>
                                     </Collapsible>
                                 </ListItem.Content>
-                    </ListItem>
-                </View>
-                {
-                    <View animation='bounceInRight' duration={1500} delay={0} 
-                    style={{flexDirection: 'column', alignItems: 'center',  flex: 2,}}>
+                                {
+                  
                         <TouchableOpacity style={{flex: 1}}>
                             <View style={{flexDirection: 'row', flex: 1, justifyContent: 'center', alignItems: 'center',  }}>
-                                <Input keyboardType='numeric' value={quantity.toString()} onChangeText={onInputHandler} inputContainerStyle={{height: 21, }}  containerStyle={{  height: 30,  width: 65}} />
+                                <Input keyboardType='numeric' value={quantity.toString() || 0} onChangeText={onInputHandler} inputContainerStyle={{height: 15, }}  containerStyle={{  height: 15,  width: 65}} />
                                 <Text style={{paddingRight: 5}}>{item?.unit.substring(5)}</Text>
                                 {
-                                    onAdd ?
-                                    <Icon onPress={addToListHandler} name='pluscircleo' type='antdesign' color='green' size={24} />
+                                    searchResult ?
+                                    <Icon onPress={() => onIconPress(item)} name='pluscircleo' type='antdesign' color='green' size={24} />
                                     :
-                                    <Icon onPress={onRemove} name='minuscircleo' type='antdesign' color='red' size={24} />
+                                    <Icon onPress={() => onIconPress(item)} name='minuscircleo' type='antdesign' color='red' size={24} />
                                 }
                             </View>
                         </TouchableOpacity>
-                    </View>
                 }
+                    </ListItem>
+                </View>
             </View>
            
         </TouchableOpacity>
     )
 }
 
-export default NutritionEntryCard
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onIconPress: ownProps.searchResult ?
+                     item => dispatch(addEntry(item))
+                     : 
+                     item => dispatch(removeEntry(item))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(NutritionEntryCard)

@@ -39,12 +39,11 @@ const tabBarOptions = {
     indicatorStyle: {
         backgroundColor: 'black'
     },
-    activeTintColor: '#2b2626',
-    inactiveTintColor: '#636363',
+    activeTintColor: 'white',
+    inactiveTintColor: 'black   ',
     tabStyle: {
-        backgroundColor: colors.platinum,
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: colors.smokyblack
+        //backgroundColor: colors.platinum,
+        backgroundColor: '#822a78',
     }
 }
 

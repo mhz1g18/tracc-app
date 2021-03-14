@@ -13,12 +13,12 @@ const ScreenContainer = ({children, title, refreshControl, rightIcon, leftCompon
         <Header
             placement="center"
             containerStyle={{borderBottomWidth: 0,  borderBottomColor: colors.smokyblack}}
-            backgroundColor={headerBackgroundColor || '#13115c'}
+            backgroundColor={headerBackgroundColor || '#822a78'}
             leftComponent={leftComponent || {icon: 'menu', color: '#fff', onPress: handleOpenDrawer}}
             centerComponent={{ text: title || props.route.name, style: { fontSize: 18, color: '#fff' } }}
             rightComponent={rightComponent || rightIcon}
             />
-            <SplashScreenContainer style={{...style, height: Dimensions.get('window').height}}>
+            <SplashScreenContainer style={{...style, height: Dimensions.get('window').height, backgroundColor: 'white'}}>
                 {children}
             </SplashScreenContainer>
         </View>

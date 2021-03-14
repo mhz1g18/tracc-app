@@ -9,153 +9,111 @@ import NutritionEntryCard from '../../../../../components/NutritionEntryCard';
 import ScreenContainer from '../../../../../components/ScreenContainer';
 import { addEntryAsync, editEntryAsync } from '../../../../../redux/actions/diaryActions';
 import { connect } from 'react-redux';
+import { fetchSearchResults, loadEntries, resetEntries } from '../../../../../redux/actions/nutritionEntryActions';
+import EntryHeader from './EntryHeader';
 
-const initialState = {
-    foodList: [],
-    supplementList: [],
-    searchResults: [],
-    searchString: ''
-}
 
-const reducer = (state, action) => {
-    switch (actip.type) {
-        case 'REGISTER_SEARCH_ETNRIES':
-            return {
-                ...state,
-
-            }
-        default:
-            break;
-    }
-}
-
-const NutritionEntryScreen = ({navigation, submitEntry, route, ...props}) => {
+const NutritionEntryScreen = ({navigation, setItems, itemsList, submitEntry, searchResults,  fetchResults, loadEntries, route, ...props}) => {
 
     const entry = route?.params?.entry
-
+    console.log(entry?.id)
     const [search, setSearch] = useState('')
-    const [searchResults, setSearchResults] = useState([])
-    const [itemsList, setItemsList] = useState([])
+    //const [searchResults, setSearchResults] = useState([])
+    //const [itemsList, setItemsList] = useState([])
 
     const submitHandle = async () => {  
 
-        let foodList = []
-        let supplementList = []
-
-        for(let i = 0; i < itemsList.length; i++) {
-            if(itemsList[i].type === 'FOOD') {
-                foodList.push(itemsList[i])
-            } else {
-                supplementList.push(itemsList[i])
-            }
+        const payload = {
+            type: 'ENTRY_NUTRITION',
+            foodList: itemsList.filter(item => item.type === 'FOOD'),
+            supplementList: itemsList.filter(item => item.type === 'SUPPLEMENT')
         }
 
-        const payload = entry ?
-        {
-            id: entry.id,
-            type: 'ENTRY_NUTRITION',
-            foodList,
-            supplementList,
-        }
-        :
-        {
-            type: 'ENTRY_NUTRITION',
-            foodList,
-            supplementList,
+        if(entry) {
+            payload.id = entry.id
         }
 
         submitEntry(payload)
         navigation.pop()
-
     }
-
-    const addToList = useCallback((item, unit, quantity) => {
-        const itemToAdd = {...item, unit, quantity}
-        setItemsList(list => [...list, itemToAdd])
-    }, [setItemsList])
-
-
-
-
-    const fetchResults = async () => {
-        let endpoint = `${API_BASE}/api/nutrition/search?`
-
-        if(search.length > 0) {
-            endpoint += `name=${search}`
-        }
-
-        const token = await AsyncStorage.getItem('traccToken')
-
-        try {
-            const results = await axios.get(endpoint, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-
-            console.log(results.data);
-            setSearchResults(results.data)
-
-        } catch(e) {
-        }
-    }
-
+   
     useEffect(() => {
-        fetchResults()
+        fetchResults(search)
     }, [search])
 
     useEffect(() => {
         if(entry) {
-            setItemsList(() =>  [...entry?.foodList, ...entry?.supplementList])
+            const { foodList, supplementList } = entry
+            const items = [...foodList, ...supplementList]
+            setItems(items)
+        } else {
+            console.log('resetting items')
+            setItems()
         }
     }, [])
 
+
     return (
             
-                <ScreenContainer title='Nutrition' {...props}>
-                    <ScrollView style={{paddingBottom: 150, }}>
-                    
-                    <View style={{flexDirection: 'column'}}>
-                        <SearchBar placeholder='Search by name' 
-                                   value={search}
-                                   onChangeText={setSearch} 
-                                   showLoading={true}
-                                   lightTheme 
-                                   round />
-                    </View>
+                <ScreenContainer title='Nutrition' rightComponent={<EntryHeader id={entry?.id} onSubmit={submitHandle}/>} {...props}>
+                    <ScrollView >
+                        <View style={{flexDirection: 'column'}}>
+                            <SearchBar placeholder='Search by name' 
+                                    value={search}
+                                    onChangeText={setSearch} 
+                                    showLoading={true}
+                                    lightTheme 
+                                    round />
+                        </View>
 
-                    <View style={{flexDirection: 'column'}}>
+                        <View style={{flexDirection: 'column', }}>
+                            {
+                                searchResults?.map((result, id) => <NutritionEntryCard searchResult={true} key={id} item={result}/>)
+                            }
+                        </View>
+                    
+                        <View style={{paddingTop: 10, paddingBottom: 10,}}>
+                            <ListItem containerStyle={{backgroundColor: '#14d997',  }} >
+                                {/* <Avatar icon={{name:'food-steak', color:'#9c246a', type:'material-community', size:33}} rounded/> */}
+                                <ListItem.Content>
+                                    <ListItem.Title style={{color : 'white', fontSize: 19}}>Items</ListItem.Title>
+                                </ListItem.Content>
+                            </ListItem>  
+                            {
+                                itemsList?.map((item, id) => <NutritionEntryCard  onRemove={() => setItemsList(list => list.filter((_, itemId) => itemId != id))} key={`${item.id}-${id}`} item={item} />)
+                            }
+
+                        </View> 
                         {
-                            searchResults.map((result, id) => <NutritionEntryCard onAdd={addToList} key={id} item={result}/>)
-                        }
-                    </View>
-                
-                    <View style={{paddingTop: 10, paddingBottom: 10,}}>
-                    <ListItem containerStyle={{backgroundColor: '#14d997',  }} >
-                        {/* <Avatar icon={{name:'food-steak', color:'#9c246a', type:'material-community', size:33}} rounded/> */}
-                        <ListItem.Content>
-                            <ListItem.Title style={{color : 'white', fontSize: 19}}>Nutrition</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>  
-                    {
-                        itemsList.map((item, id) => <NutritionEntryCard  onRemove={() => setItemsList(list => list.filter((_, itemId) => itemId != id))} key={`${item.id}-${id}`} item={item} />)
-                    }
-
-                    
-
-                    </View>                     
-                    <ListItem containerStyle={{backgroundColor: '#3a2b6b'}} onPress={submitHandle}> 
-                        <ListItem.Content>
-                            <ListItem.Title style={{color : 'white'}}>Submit</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                    <ListItem containerStyle={{backgroundColor: '#F44336',  justifyContent: 'center', alignItems: 'center'}} onPress={() => navigation.pop()}>
-                        <ListItem.Content>
-                            <ListItem.Title style={{color : 'white', }}>
-                                <Text>Cancel</Text>
-                            </ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
+                            entry &&
+                            <>
+                                <ListItem containerStyle={{backgroundColor: 'purple',  }} >
+                                    <ListItem.Content>
+                                        <ListItem.Title style={{color : 'white', fontSize: 19}}>Summary</ListItem.Title>
+                                    </ListItem.Content>
+                                </ListItem>  
+                                <View style={{backgroundColor: 'white', paddingLeft: 20, paddingRight: 20, paddingTop: 20, paddingBottom: 20}}>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Text style={{fontSize: 16}}>{entry.calories.toFixed(2)} calories</Text>
+                                    </View>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Text style={{fontSize: 16, color: 'grey'}}>{entry.protein.toFixed(1)}g protein </Text>
+                                        <Text style={{fontSize: 16, color: 'grey'}}>{entry.carbs.toFixed(1)}g carbs </Text>
+                                        <Text style={{fontSize: 16, color: 'grey'}}>{entry.protein.toFixed(1)}g fats</Text>
+                                    </View>
+                                    <View style={{flexDirection: 'column', paddingTop: 10}}>
+                                        <Text style={{fontSize: 16}}>Micronutrients</Text>
+                                        {entry.micronutrients.map((micro, id) => {
+                                            return (
+                                                <Text style={{fontSize: 14, color: 'grey'}} key={id}>
+                                                    {micro.name} - {micro.quantity} {micro.unit}
+                                                </Text>
+                                            )
+                                        })}
+                                    </View>
+                                </View>
+                            </>
+                        }                    
                     </ScrollView>
                 </ScreenContainer>
                 
@@ -164,14 +122,26 @@ const NutritionEntryScreen = ({navigation, submitEntry, route, ...props}) => {
 
 }
 
+const mapStateToProps = (state, ownProps) => {
+    return {
+        searchResults: state.nutritionEntry.searchItems,
+        itemsList: state.nutritionEntry.itemsList
+    }
+}
+
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         submitEntry: ownProps.route?.params?.entry ?
                      entry => dispatch(editEntryAsync(entry))
                      :
-                     entry => dispatch(addEntryAsync(entry))
+                     entry => dispatch(addEntryAsync(entry)),
+        fetchResults: searchString => dispatch(fetchSearchResults(searchString)),
+        setItems: ownProps.route?.params?.entry ? 
+                entry => dispatch(loadEntries(entry))
+                :
+                () => dispatch(resetEntries())
     }
 }
 
-export default connect(null ,mapDispatchToProps)(NutritionEntryScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(NutritionEntryScreen)
 

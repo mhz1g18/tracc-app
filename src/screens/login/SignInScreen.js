@@ -4,14 +4,14 @@ import SplashScreenContainer from '../../components/SplashScreenContainer'
 import SplashScreenHeader from '../../components/SplashScreenHeader'
 import { Input, Button, SocialIcon } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { loginUser } from '../../redux/actions/authActions'
+import { loginUser, loginUserError } from '../../redux/actions/authActions'
 import { connect } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/AntDesign';
 import Divider from 'react-native-divider'
 import { colors } from '../../colors'
 
-const SignInScreen = ({navigation, user, loading, error, loginUser}) => {
+const SignInScreen = ({navigation, user, loading, setError, error, loginUser}) => {
 
     const [authObject, setAuthObject] = useState({
         username: '',
@@ -40,13 +40,18 @@ const SignInScreen = ({navigation, user, loading, error, loginUser}) => {
     const handleSignIn = () => {
         const {username, password} = authObject
 
-        loginUser({username, password})
+        if(username.length < 6 || password.length < 8) {
+            setError('Please type in your username and password')
+        } else {
+            loginUser({username, password})
+        }
+
 
     }
 
     return (
         <SplashScreenContainer>
-            <SafeAreaView style={{flex: 1, alignItems: 'center'}}>
+            <SafeAreaView style={{flex: 1, alignItems: 'center', paddingTop: 0}}>
                 <SplashScreenHeader />
             </SafeAreaView>
             <KeyboardAvoidingView style={{flex: 1, alignItems: 'center',}}>
@@ -83,7 +88,7 @@ const SignInScreen = ({navigation, user, loading, error, loginUser}) => {
                     null
                     : 
                     <Animatable.View animation="bounceIn" duration={500}>
-                        <Text style={{color: '#8f0a13'}}>{error.message}</Text>
+                        <Text style={styles.errorMessage}>{error}</Text>
                     </Animatable.View>
                 }
                 <View style={{width: device_width * 0.8}}>
@@ -133,6 +138,9 @@ const styles = StyleSheet.create({
         width: device_width * 0.8,
         alignSelf: 'center'
     },
+    errorMessage: {
+        color: 'white'
+    },
 })
 
 const mapStateToProps = state => {
@@ -145,7 +153,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        loginUser: request => dispatch(loginUser(request))
+        loginUser: request => dispatch(loginUser(request)),
+        setError: error => dispatch(loginUserError(error)),
     }
 }
 

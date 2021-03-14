@@ -2,14 +2,13 @@ import React, { useState } from 'react'
 import { KeyboardAvoidingView, Text, View, Dimensions, StyleSheet } from 'react-native'
 import SplashScreenContainer from '../../components/SplashScreenContainer'
 import { Input, Button } from 'react-native-elements'
-import * as Animatable from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import {colors} from '../../colors'
 import DatePicker from 'react-native-date-picker'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
-
+import ProgressBar from 'react-native-progress/Bar'
 const SignUpInfoScreen = ({navigation,}) => {
 
     const [userInfo, setUserInfo] = useState({
@@ -48,7 +47,6 @@ const SignUpInfoScreen = ({navigation,}) => {
 
 
     const nextScreenHandler = () => {
-        console.log(userInfo);
         let {name, dateOfBirth, weight, height} = userInfo
         dateOfBirth = dateOfBirth.toISOString()
         navigation.navigate('SignUpLoginScreen', {
@@ -65,6 +63,9 @@ const SignUpInfoScreen = ({navigation,}) => {
     return (
         <SplashScreenContainer>
             <View style={styles.container}>
+                {/* <Text style={{fontFamily: 'monospace'}}>setting up your account</Text>
+                <ProgressBar progress={0.3} borderColor='white' color='white' width={200} /> */}
+
                 <View style={styles.header}>
                     <Text style={styles.headerTextStyle}> Tell us more about yourself </Text>
                 </View>
@@ -75,6 +76,7 @@ const SignUpInfoScreen = ({navigation,}) => {
                                     size={19}
                                     color='black' />
                             }
+                            placeholderTextColor='black'
                             onChangeText={nameChangeHandler}
                             inputStyle={styles.inputStyle}
                             inputContainerStyle={styles.inputContainerStyle}/>
@@ -86,6 +88,7 @@ const SignUpInfoScreen = ({navigation,}) => {
                                     size={19}
                                     color='black' />
                             }
+                            placeholderTextColor='black'
                             inputStyle={styles.inputStyle}
                             inputContainerStyle={styles.inputContainerStyle}/>
                     {
@@ -101,6 +104,7 @@ const SignUpInfoScreen = ({navigation,}) => {
                         }
                         onChangeText={weightChangeHandler}
                         keyboardType='numeric'
+                        placeholderTextColor='black'
                         inputStyle={styles.inputStyle}
                         inputContainerStyle={styles.inputContainerStyle}/>
                 <Input placeholder="Height"
@@ -110,6 +114,7 @@ const SignUpInfoScreen = ({navigation,}) => {
                                   color='black' />
                         }
                         onChangeText={heightChangeHandler}
+                        placeholderTextColor='black'
                         keyboardType='numeric'
                         inputStyle={styles.inputStyle}
                         inputContainerStyle={styles.inputContainerStyle}/>
@@ -179,7 +184,7 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     headerTextStyle: {
-        color: colors.smokyblack,
+        color: 'white',
         fontSize: 20,
         fontWeight: 'bold',
         fontFamily: 'sans-serif-thin',

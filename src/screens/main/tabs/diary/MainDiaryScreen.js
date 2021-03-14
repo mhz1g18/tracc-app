@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useReducer, useRef, useContext } from 'react'
-import { View, RefreshControl, Dimensions } from 'react-native'
+import { View, RefreshControl, Dimensions, StyleSheet } from 'react-native'
 import ScreenContainer from '../../../../components/ScreenContainer'
 import RevealingMenu from '../../../../components/RevealingMenu'
 import EntriesListView from './EntriesListView'
@@ -13,7 +13,7 @@ import { Icon } from 'react-native-elements'
 import SleepEntryScreen from './entries/SleepEntryScreen'
 import { NutritionContext } from './NutritionContext'
 import NutritionEntryScreen from './entries/NutritionEntryScreen'
-import { getEntriesForDate } from '../../../../redux/actions/diaryActions'
+import { getEntriesForDate, refreshEntriesForDate } from '../../../../redux/actions/diaryActions'
 import { connect } from 'react-redux'
 
 
@@ -24,45 +24,6 @@ const list = [
     { title: 'Activity', onPress: () => console.log('hahahah'), icon: { name: 'weight-lifter', type: 'material-community', color: 'black'} }
   ];
 
-const initialState = {
-    data: [],
-    loading: true,
-    error: ''
-}
-
-function reducer(state, action) {
-    switch (action.type) {
-        case 'LOAD_ENTRIES':
-            return {
-                ...state,
-                loading: true,
-            }
-        case 'LOAD_ENTRIES_ERROR':
-            return {
-                ...state,
-                data: [],
-                error: action.paylad
-            }
-        case 'LOAD_ENTRIES_SUCCESS':
-            return {
-                ...state,
-                data: action.payload,
-                loading: false,
-            }
-        case 'DELETE_ENTRY':
-            return {
-                ...state,
-                data: state.data.filter(entry => entry.id != action.payload)
-            }
-        case 'ADD_ENTRY':
-            return {
-                ...state,
-                data: [...state.data, action.payload]
-            }
-        default:
-            throw new Error('undefineda ction' + action.type)
-    }
-  }
 
 const RightHeaderComponent = ({onPressCalendar, onPressAddEntry, }) => {
     return (
@@ -73,7 +34,7 @@ const RightHeaderComponent = ({onPressCalendar, onPressAddEntry, }) => {
     )
 }
   
-const MainDiaryScreen = ({fetchEntries, diary, navigation, ...props}) => {
+const MainDiaryScreen = ({fetchEntries, diary, refreshEntries, navigation, ...props}) => {
 
     const [date, setDate] = new useState(new Date())
     const [modalOpened, setModalOpened] = useState(false)
@@ -112,12 +73,12 @@ const MainDiaryScreen = ({fetchEntries, diary, navigation, ...props}) => {
     
     return (    
         <ScreenContainer rightComponent={<RightHeaderComponent onPressAddEntry={toggleModal} onPressCalendar={toggleCalendar}/>}
-                         headerBackgroundColor={colors.sonicsilver}  
+                         headerBackgroundColor={'#822a78'}  
                    /*       refreshControl={<RefreshControl onRefresh={fetchData}/>} */
                          {...props}>
-            <View style={{flexDirection: 'column', flex: 1, paddingBottom: 50}}>
-                <DiaryHeader date={date} setDateBack={setDateBack} setDateNext={setDateNext}/>
-                <EntriesListView data={diary.data} loading={diary.loading} navigation={navigation}/>
+            <View style={styles.container}>
+                <DiaryHeader date={date} setDateBack={setDateBack} setDateNext={setDateNext} refreshing={diary.refreshing}/>
+                <EntriesListView data={diary.data} loading={diary.loading} />
             </View>
             <View>
                 <CalendarPicker isVisible={calendarVisible} onDayPress={onCalendarDayPress} onClose={closeCalendar}/>
@@ -136,8 +97,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchEntries: date => dispatch(getEntriesForDate(date))
+        fetchEntries: date => dispatch(getEntriesForDate(date)),
+        refreshEntries: date => dispatch(refreshEntriesForDate(date))
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'column', 
+        flex: 1, 
+    },
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainDiaryScreen)

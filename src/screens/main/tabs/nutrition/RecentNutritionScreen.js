@@ -13,9 +13,10 @@ const RecentNutritionScreen = ({navigation}) => {
 
     //const [data, setData] = useState({items: [], filteredItems: [],  error: '', loading: false})
 
-    const { state, dispatch} = useContext(TabContext)
+    const { search, } = useContext(TabContext)
+    const [data, setData] = useState({items: [], filteredItems: [], loading: false, refreshing: false, error: ''})
 
-    const fetchEntries = useCallback(async () => {
+    const fetchEntries = async (refreshing = false) => {
         let endpoint = `${API_BASE}/api/user/diary/entries?type=ENTRY_NUTRITION`
         const token = await AsyncStorage.getItem('traccToken')
 
@@ -29,6 +30,8 @@ const RecentNutritionScreen = ({navigation}) => {
             })
 
             const items = []
+            const itemIds = []
+
 
             for(let i = 0; i < results.data.length; i++) {
 
@@ -48,36 +51,34 @@ const RecentNutritionScreen = ({navigation}) => {
             }
 
             //setData(data => ({...data, items: items, filteredItems: items, loading: false, error: ''}))
-            dispatch({type: 'LOAD_NUTRITION_SUCCESS', payload: items})
+            setData(data => ({...data, loading: false, refreshing: false, items: items, filteredItems: items}))
         } catch(e) {
             console.log(e);
             /* setData({items: [], filteredItems: [], loading: false, error: e}) */
-            dispatch({type: 'LOAD_NUTRITION_ERROR', pyaload: e})
+            setData(data => ({...data, loading: false, refreshing: false, error: e}))
+
         }
 
-    }, [])
+    }
 
-  /*   useFocusEffect(
-        useCallback(() => {
-            dispatch({type: 'LOAD_NUTRITION'})
-            fetchEntries()
-        }, [])
-    ) */
+
+    const deleteHandler = useCallback(id => {
+        setData(data => ({...data, items: data.items.filter(item => item?.id != id), filteredItems: data.filteredItems.filter(item => item?.id != id)}))
+    }, [setData])
+
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            console.log('here');
-            dispatch({type: 'LOAD_NUTRITION'})
-            fetchEntries()
-        });
-    
-        return unsubscribe;
-    }, [navigation]);
+        fetchEntries()
+    }, [])
 
+    useEffect(() => {
+        const filteredItems = data.items.filter(item => item?.name.toUpperCase().includes(search.toUpperCase()))
+        setData(data => ({...data, filteredItems}))
+    }, [search])
     
     return (
        <>
-            <InnerTabWrapper loading={state.loading} items={state.filteredItems} onRefresh={fetchEntries} />
+            <InnerTabWrapper loading={data.loading} items={data.filteredItems} onItemDelete={deleteHandler} onRefresh={() => fetchEntries(true)  } />
        </>
     )
 }

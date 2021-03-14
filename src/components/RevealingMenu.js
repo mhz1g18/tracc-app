@@ -12,8 +12,12 @@ const RevealingMenu = ({isVisible, list, toggleModal, }) => {
 
     const navigation = useNavigation()
 
-    const onPressHandle = screenName => {
-        navigation.navigate(screenName)
+    const onPressHandle = (screenName, screenParams) => {
+        if(screenParams) {
+            navigation.navigate(screenName, screenParams)
+        } else {
+            navigation.navigate(screenName)
+        }
         toggleModal()
     }
 
@@ -21,7 +25,7 @@ const RevealingMenu = ({isVisible, list, toggleModal, }) => {
         <BottomSheet isVisible={isVisible}
                      containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}>
             {list.map((l, i) => (
-            <ListItem key={i} containerStyle={l.containerStyle} onPress={() => onPressHandle(l?.screenName)}>
+            <ListItem key={i} containerStyle={l.containerStyle} onPress={() => onPressHandle(l?.screenName, l?.screenParams)}>
                 {l.icon && <Avatar size={40} containerStyle={{marginTop: -10, marginBottom: -10, marginRight: -10}} icon={l.icon} rounded /> }
                 <ListItem.Content>
                 <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>

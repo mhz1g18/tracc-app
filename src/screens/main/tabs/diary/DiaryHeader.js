@@ -37,18 +37,33 @@ const DiaryHeader = ({date, setDateBack, setDateNext, showBorder}) => {
     console.log(showBorder);
 
     return (
-        <View style={{flexDirection: 'row',  borderBottomWidth: showBorder ? StyleSheet.hairlineWidth : 0, /* width:'80%', borderRadius: 20, backgroundColor: {colors.offwhite}, */}}>
-            <TouchableOpacity style={{paddingLeft: 35}}>
-                <Icon name='arrowleft' type='antdesign' color='#636363' raised size={20} onPress={setDateBack}/>
+        <View style={styles.wrapper}>
+            <TouchableOpacity>
+                <Icon name='arrowleft' type='antdesign' color='black' raised size={20} onPress={setDateBack}/>
             </TouchableOpacity>
-            <View style={{flex: 3, justifyContent: 'center', alignItems: 'center'}}>
-                <Text h4 h4Style={{fontSize: 22, color: colors.smokyblack,}}>{dateLabel}</Text>
+            <View style={styles.labelWrapper}>
+                <Text h4 h4Style={styles.label}>{dateLabel}</Text>
             </View>
-            <TouchableOpacity style={{paddingRight: 35,}}>
-                <Icon name='arrowright'  type='antdesign' color='#636363' raised size={20} onPress={setDateNext} />
+            <TouchableOpacity>
+                <Icon name='arrowright'  type='antdesign' color='black' raised size={20} onPress={setDateNext} />
             </TouchableOpacity>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    wrapper: {
+        flexDirection: 'row',  
+        paddingLeft: 35,
+        paddingRight: 35,
+    },
+    label: {
+        fontSize: 22, 
+        color: colors.smokyblack,
+    },
+    labelWrapper: {
+        flex: 3, justifyContent: 'center', alignItems: 'center'
+    },
+})
 
 export default DiaryHeader

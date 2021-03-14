@@ -7,12 +7,11 @@ import { ScrollView } from 'react-native'
 import { TabContext } from './TabContext'
 import { FlatList } from 'react-native'
 
-const InnerTabWrapper = ({items, loading, onRefresh}) => {
+const InnerTabWrapper = ({items, loading, onRefresh, onItemDelete}) => {
 
   const { dispatch } = useContext(TabContext)
 
   const onRefreshHandler = () => {
-    dispatch({type: 'REFRESH_NUTRITION'})
     onRefresh()
   }
     
@@ -25,7 +24,7 @@ return (
         :
         <FlatList data={items} contentContainerStyle={{paddingBottom: 75}}
                   keyExtractor={(item, idx) => `${item?.id}-${idx}`} 
-                  renderItem={({item}) => item && <ExpandableCard item={item}/>}
+                  renderItem={({item}) => item && <ExpandableCard onDelete={onItemDelete} item={item}/>}
                   onRefresh={onRefreshHandler}
                   refreshing={false} />
         }

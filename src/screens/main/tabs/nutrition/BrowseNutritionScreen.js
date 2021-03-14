@@ -8,12 +8,19 @@ import { SearchBar } from 'react-native-elements'
 
 const BrowseNutritionScreen = ({navigation}) => {
 
-    //const [data, setData] = useState({items: [], filteredItems: [],  error: '', loading: false})
+    const [data, setData] = useState({items: [], filteredItems: [],  error: '', loading: false})
     const [searchVals, setSearchVals] = useState({name: '',})
 
-    const { state, dispatch } = useContext(TabContext)
+    const { search, } = useContext(TabContext)
 
-    const fetchEntries = useCallback(async (searchVals) => {
+    const fetchEntries = async (searchVals) => {
+
+        if(searchVals.length < 2) {
+            setData(data => ({...data, loading: false}))
+            return
+        }
+
+        setData(data => ({...data, loading: true,}))
         let endpoint = `${API_BASE}/api/nutrition/search?`
 
         if(searchVals.name.length > 0) {
@@ -29,35 +36,35 @@ const BrowseNutritionScreen = ({navigation}) => {
                 }
             })
 
-            console.log(results.data);
+            setData(data => ({...data, loading: false, error: '', items: results.data, filteredItems: results.data,}))
 
-            dispatch({type: 'LOAD_NUTRITION_SUCCESS', payload: results.data})
         } catch(e) {
-            dispatch({type: 'LOAD_NUTRITION_ERROR', payload: e})
+            setData(data => ({...data, error: e}))
         }
 
-    }, [])
+    }
+
+    const deleteHandler = useCallback(id => {
+        setData(data => ({...data, items: data.items.filter(item => item.id != id), filteredItems: data.filteredItems.filter(item => item.id != id)}))
+    }, [setData])
 
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            dispatch({type: 'LOAD_NUTRITION_SUCCESS', payload: []})
-        });
-    
-        return unsubscribe;
-    }, [navigation]);
-
-    useEffect(() => {
-        dispatch({type: 'LOAD_NUTRITION'})
         fetchEntries(searchVals)
     }, [searchVals])
+
+    useEffect(() => {
+        const filteredItems = data.items.filter(item => item.name.toUpperCase().includes(search.toUpperCase()))
+        setData(data => ({...data, filteredItems}))
+    }, [search])
+    
     
     return (
        <>
              <SearchBar  placeholder='Search by name' showLoading
                         lightTheme onChangeText={text => setSearchVals(vals => ({...vals, name: text}))} value={searchVals.name}
                        round />
-            <InnerTabWrapper loading={state.loading} items={state.filteredItems} onRefresh={fetchEntries} />
+            <InnerTabWrapper loading={data.loading} items={data.filteredItems} onItemDelete={deleteHandler} onRefresh={fetchEntries} />
        </>
     )
 }

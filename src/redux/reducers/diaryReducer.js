@@ -1,12 +1,15 @@
-import { ADD_ENTRY, DELETE_ENTRY, EDIT_ENTRY, LOAD_ENTRIES, LOAD_ENTRIES_ERROR, LOAD_ENTRIES_SUCCESS } from "../actiontypes/diaryActionTypes"
+import { ADD_ENTRY, DELETE_ENTRY, EDIT_ENTRY, LOAD_ENTRIES, LOAD_ENTRIES_ERROR, LOAD_ENTRIES_SUCCESS, REFRESH_DIARY_ENTRIES, REFRESH_DIARY_ENTRIES_SUCCESS } from "../actiontypes/diaryActionTypes"
 
 const initialState = {
     data: [],
-    loading: true,
+    loading: false,
+    refreshing: false,
     error: ''
 }
 
 const diaryReducer = (state = initialState, action) => {
+    console.log('action is: ');
+    console.log(action);
     switch (action.type) {
         case LOAD_ENTRIES:
             return {
@@ -25,6 +28,17 @@ const diaryReducer = (state = initialState, action) => {
                 data: action.payload,
                 loading: false,
             }
+        case REFRESH_DIARY_ENTRIES:
+            return {
+                ...state,
+                refreshing: true,
+            }
+        case REFRESH_DIARY_ENTRIES_SUCCESS:
+            return {
+                ...state,
+                refreshing: false,
+                data: action.paylad,
+            }
         case DELETE_ENTRY:
             return {
                 ...state,
@@ -38,6 +52,7 @@ const diaryReducer = (state = initialState, action) => {
         case EDIT_ENTRY:
             return {
                 ...state,
+                loading: false,
                 data: state.data.map(item => item.id === action.payload.id ? action.payload : item)
             }
         default:

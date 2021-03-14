@@ -7,13 +7,25 @@ import { useSelector } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
 import { colors } from '../colors'
 import { TabContext } from '../screens/main/tabs/nutrition/TabContext';
+import { useNavigation } from '@react-navigation/core';
 
-const ExpandableCard = ({item}) => {
+const ExpandableCard = ({item, onDelete}) => {
 
     const [collaped, setCollaped] = useState(true)
+    const navigation = useNavigation()
     const userId = useSelector(state => state.auth.user.id)
 
     const { deleteItemHandler } = useContext(TabContext)
+    
+    const onDeleteHandler = () => {
+        console.log(item.id)
+        onDelete(item.id)
+        deleteItemHandler(item.id)
+    }
+
+    const onEditHandler = () => {
+        navigation.navigate('NutritionForm',{ type: item.type, item, edit: true,})
+    }
 
     const toggleExpansion = () => {
         setCollaped(exp => !exp)
@@ -21,7 +33,7 @@ const ExpandableCard = ({item}) => {
 
     return (
         <TouchableOpacity style={{flex: 1, }} onPress={toggleExpansion}>
-            <View style={{flexDirection: 'row', width: '100%', backgroundColor: 'white',}}>
+            <View style={{flexDirection: 'row', flex: 1,backgroundColor: 'white',}}>
                 <View style={{backgroundColor: colors.platinum, flexDirection: 'column', flex: 3}}>
                     <ListItem  bottomDivider>
                                 {
@@ -36,20 +48,20 @@ const ExpandableCard = ({item}) => {
                                     {item.categories.length > 0 && <ListItem.Subtitle>{item.categories.map((cat, idx) => `${cat} `)}</ListItem.Subtitle>}
                                     <Collapsible collapsed={collaped}>
                                     
-                                        <View style={{marginTop: 5}}>
+                                        <View style={{marginTop: 5, }}>
                                             {
                                                 item.type === 'FOOD'
                                                 ?
                                                 <>
                                                 <ListItem.Title>{item.calories} calories</ListItem.Title>
                                                 <ListItem.Subtitle>{item.carbs} carbs {item.protein} protein {item.fats} fat</ListItem.Subtitle>
-                                                <View style={{marginTop: 1}}>
+                                                <View >
                                                 {
                                                     item.micronutrients?.map(macro => {
                                                             return (
-                                                                <>
-                                                                <ListItem.Subtitle key={`macro-${macro?.id}`}>{`${macro.name} - ${macro?.quantity}${macro.unit.substring(5)/*.tolwerCase() */}`}</ListItem.Subtitle>
-                                                                </>
+                                                                <React.Fragment key={`macro-${macro?.id}`}>
+                                                                <ListItem.Subtitle >{`${macro.name} - ${macro?.quantity}${macro.unit.substring(5)/*.tolwerCase() */}`}</ListItem.Subtitle>
+                                                                </React.Fragment>
                                                             )
                                                         
                                                     })
@@ -69,21 +81,21 @@ const ExpandableCard = ({item}) => {
                     !collaped && item?.createdBy === userId
                     &&
                     <Animatable.View animation='bounceInRight' duration={1500} delay={0} style={{flexDirection: 'column',  flex: 1,}}>
-                        <TouchableOpacity style={{flex: 1}} onPress={() => deleteItemHandler(item.id)}>
+                        <TouchableOpacity style={{flex: 1}} onPress={onDeleteHandler}>
                             <View style={{flexDirection: 'row', flex: 1,backgroundColor: '#b0213c', justifyContent: 'center', alignItems: 'center',  }}>
                                 <Icon name='trash-2' type='feather' color='black' size={24} />
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{flex: 1}}>
+                        <TouchableOpacity style={{flex: 1}} onPress={onEditHandler}>
                             <View style={{flexDirection: 'row', flex: 1,backgroundColor: '#70afe6', justifyContent: 'center', alignItems: 'center',  }}>
                                 <Icon name='edit' type='feather' color='black' size={24} />
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{flex: 1}}>
+                     {/*    <TouchableOpacity style={{flex: 1}}>
                             <View style={{flexDirection: 'row', flex: 1,backgroundColor: colors.smokyblack, justifyContent: 'center', alignItems: 'center',  }}>
                                 <Icon name='heart' type='feather' color='white' size={24} />
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         
                     </Animatable.View>
                 }

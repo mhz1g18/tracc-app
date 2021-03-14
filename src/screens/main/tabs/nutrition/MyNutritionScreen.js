@@ -8,11 +8,11 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/core'
 
 const MyNutritionScreen = ({navigation}) => {
 
-    //const [data, setData] = useState({items: [], filteredItems: [],  error: '', loading: false})
+    const { search, } = useContext(TabContext)
+    const [data, setData] = useState({items: [], filteredItems: [], loading: false, refreshing: false, error: ''})
 
-    const { state, dispatch} = useContext(TabContext)
-
-    const fetchEntries = useCallback(async () => {
+    const fetchEntries = async (refreshing = false) => {
+        setData(data => ({...data, loading: !refreshing, refreshing: refreshing}))
         const endpoint = `${API_BASE}/api/nutrition/`
         const token = await AsyncStorage.getItem('traccToken')
 
@@ -22,31 +22,31 @@ const MyNutritionScreen = ({navigation}) => {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            dispatch({type: 'LOAD_NUTRITION_SUCCESS', payload: results.data})
+            setData(data => ({...data, loading: false, refreshing: false, items: results.data, filteredItems: results.data}))
 
         } catch(e) {
             console.log(e);
-            dispatch({type: 'LOAD_NUTRITION_ERROR', payload: e})
+            setData(data => ({...data, loading: false, refreshing: false, error: e}))
 
         }
 
-    }, [])
+    }
 
+    const deleteHandler = useCallback(id => {
+        setData(data => ({...data, items: data.items.filter(item => item.id != id), filteredItems: data.filteredItems.filter(item => item.id != id)}))
+    }, [setData])
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        fetchEntries()
+    }, [])
 
-            dispatch({type: 'LOAD_NUTRITION'})
-            fetchEntries()
-        });
-    
-        return unsubscribe;
-    }, [navigation]);
-
-
+    useEffect(() => {
+        const filteredItems = data.items.filter(item => item.name.toUpperCase().includes(search.toUpperCase()))
+        setData(data => ({...data, filteredItems}))
+    }, [search])
     
     return (
-        <InnerTabWrapper loading={state.loading} items={state.filteredItems} onRefresh={fetchEntries}/>
+        <InnerTabWrapper loading={data.loading} items={data.filteredItems} onItemDelete={deleteHandler} onRefresh={() => fetchEntries(true)}/>
     )
 
 }

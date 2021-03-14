@@ -6,9 +6,9 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {colors} from '../../colors'
 import Divider from 'react-native-divider'
 import { connect } from 'react-redux';
-import { signUpUser } from '../../redux/actions/authActions'
+import { signUpUser, loginUserError } from '../../redux/actions/authActions'
 
-const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => {
+const SignUpLoginScreen = ({navigation, route, loading, error, setError, signUpUser,}) => {
 
 
     const [signUpRequest, setSignUpRequest] = useState({
@@ -18,8 +18,6 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
         passwordChange: false,
         userInfo: route.params
     })
-
-    console.log(error);
 
 
     const nameChangeHandler = text => {
@@ -34,7 +32,14 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
 
     const signUpHandler = () => {
         const {username, password, userInfo} = signUpRequest
-        signUpUser({username, password, userInfo})
+
+        if(username.length < 6 || password.length < 8) {
+            setError('Password should be over 8 charaters')
+        } else {
+            signUpUser({username, password, userInfo})
+
+        }
+
     }
 
 
@@ -54,6 +59,7 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
                                     color='black' />
                             }
                             onChangeText={nameChangeHandler}
+                            placeholderTextColor='black'
                             inputStyle={styles.inputStyle}
                             inputContainerStyle={styles.inputContainerStyle}/>
                     <Input placeholder="Password" 
@@ -64,6 +70,7 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
                                     color='black' />
                             }
                             onChangeText={passwordChangeHandler}
+                            placeholderTextColor='black'
                             inputStyle={styles.inputStyle}
                             inputContainerStyle={styles.inputContainerStyle}/>
                             
@@ -75,9 +82,15 @@ const SignUpLoginScreen = ({navigation, route, loading, error, signUpUser,}) => 
                         buttonStyle={styles.signInButton}/>
 
                 <View style={{width: device_width * 0.8}}>
-                    <Divider borderColor="black" orientation='center'>OR</Divider>
+                    <Divider borderColor="white" color='white' orientation='center'>OR</Divider>
                     <SocialIcon title='Sign in With Facebook' button type='facebook' />
                 </View>
+                {
+                    error ?
+                    <Text style={styles.errorText}>{error}</Text>
+                    :
+                    null
+                }
                             
             </KeyboardAvoidingView>
             </View>
@@ -143,6 +156,10 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontWeight: 'bold',
         fontFamily: 'sans-serif-thin',
+        color: 'white',
+    },
+    errorText: {
+        color: 'white'
     }
 })
 
@@ -155,7 +172,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        signUpUser: request => dispatch(signUpUser(request))
+        signUpUser: request => dispatch(signUpUser(request)),
+        setError: error => dispatch(loginUserError(error))
     }
 }
 
