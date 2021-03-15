@@ -30,7 +30,7 @@ const MainHomeScreen = ({...props}) => {
     })
 
     return (
-        <ScreenContainer headerBackgroundColor={'#822a78'} {...props} >
+        <ScreenContainer headerBackgroundColor={colors.backgroundPurple} {...props} >
             {/* <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1, paddingBottom: 15, flexDirection: 'column', }}> */}
                 
                 <View style={{flexDirection: 'column', flex: 1, paddingBottom: 20, }}>

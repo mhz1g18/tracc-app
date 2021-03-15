@@ -14,26 +14,30 @@ const SupplementForm = ({setForm, form}) => {
     }
 
     const unitInputHandler = item => {
+        console.log(item.value);
         setForm(form => ({...form, unit: item.value}))
     }
 
 
     return (
-        <View style={{justifyContent: 'center', borderWidth: 0, alignItems: 'center', marginTop: 15, width: '100%', }}>
-            <Input placeholder='Supplement name' inputStyle={styles.inputStyle} containerStyle={{width: '90%', }} value={form?.name} onChangeText={nameInputHandler}
+        <View style={styles.wrapper}>
+            <View style={{flexDirection: 'column', padding: 10, paddingTop: 20, borderBottomWidth: StyleSheet.hairlineWidth}}>
+                <Text style={styles.label}>Item name</Text>
+                 <Input placeholder='Food name' inputStyle={styles.inputStyle}  value={form?.name} onChangeText={nameInputHandler}
                         inputContainerStyle={styles.inputContainerStyle}  />
-            <Text style={{alignSelf: 'flex-start', paddingLeft: 20,}}>Measurement Unit</Text>
-            <DropDownPicker items={units}
+            </View>
+
+                <Text style={{alignSelf: 'flex-start', fontSize: 16, paddingBottom:6}}>Measurement Unit</Text>
+                <DropDownPicker items={units}
                             defaultValue={form?.unit || 'UNIT_MG'}
                             containerStyle={{height: 35}}
-                            style={{backgroundColor: '#fafafa', width:'88%', borderBottomWidth: StyleSheet.hairlineWidth}}
+                            style={styles.pickerStyle}
                             itemStyle={{
                                 justifyContent: 'flex-start'
                             }}
                             placeholder='Measurement Unit'
-                        dropDownStyle={{backgroundColor: '#fafafa'}}
-                        onChangeItem={unitInputHandler}
-/>
+                            dropDownStyle={{backgroundColor: '#fafafa'}}
+                            onChangeItem={unitInputHandler}/>
 
         </View>
     )
@@ -43,6 +47,21 @@ export default SupplementForm
 
 
 const styles = StyleSheet.create({
+    wrapper: {
+        justifyContent: 'center', 
+        borderWidth: 0, 
+        alignItems: 'center',
+        width: '100%',
+    },
+    label: {
+        fontSize: 16,
+        paddingLeft: 5
+    },
+    pickerStyle: {
+        alignSelf: 'flex-start',
+        backgroundColor: '#fafafa',
+        borderBottomWidth: StyleSheet.hairlineWidth
+    },
     inputStyle: {
         fontSize:14, 
         paddingLeft: 10, 

@@ -9,7 +9,7 @@ import RecentNutritionScreen from './RecentNutritionScreen';
 import axios from 'axios'
 import { API_BASE } from '../../../../utils/api'
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, StyleSheet } from 'react-native';
 import FoodForm from './forms/FoodForm';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SupplementForm from './forms/SupplementForm';
@@ -44,12 +44,9 @@ const SupplementFormScreen = ({route, ...props}) => {
                 })
             }
     
-            
-            Alert.alert('Success')
-            
             navigation.pop() 
         } catch(e) {
-            Alert.alert('Error')
+            Alert.alert('Error ' + e)
             console.log(e);
         }
     }
@@ -61,12 +58,12 @@ const SupplementFormScreen = ({route, ...props}) => {
     }, [route.params.item])
 
     return (
-        <ScreenContainer headerBackgroundColor={colors.sonicsilver} 
+        <ScreenContainer headerBackgroundColor={colors.backgroundPurple} 
                         rightComponent={
                         <Icon onPress={onSubmit} containerStyle={{marginRight:10}} name='check' type='feather' color='white' size={24}/>}
                          title={route.params.type.charAt(0) + route.params.type.slice(1).toLowerCase()}
                          {...props}>
-            <View style={{/* backgroundColor: 'white', */ alignItems: 'center', flex: 1, backgroundColor: 'white'}}>
+            <View style={styles.formWrapper}>
                 {
                     route.params.type === 'SUPPLEMENT'
                     ?
@@ -80,5 +77,13 @@ const SupplementFormScreen = ({route, ...props}) => {
         </ScreenContainer>
     )
 }
+
+const styles = StyleSheet.create({
+    formWrapper: {
+        alignItems: 'center', 
+        flex: 1, 
+        backgroundColor: 'white'
+    }
+})
  
 export default SupplementFormScreen

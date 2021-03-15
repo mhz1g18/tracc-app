@@ -27,14 +27,14 @@ const list = [
 
 const RightHeaderComponent = ({onPressCalendar, onPressAddEntry, }) => {
     return (
-        <View style={{flexDirection: 'row', }}>
+        <View style={styles.row}>
             <Icon containerStyle={{paddingRight: 10,}} name='plus' type='antdesign' color='#fff' onPress={onPressAddEntry}/>
             <Icon name='calendar' type='antdesign' color='#fff' onPress={onPressCalendar}/>
         </View>
     )
 }
   
-const MainDiaryScreen = ({fetchEntries, diary, refreshEntries, navigation, ...props}) => {
+const MainDiaryScreen = ({fetchEntries, diary, refreshEntries, ...props}) => {
 
     const [date, setDate] = new useState(new Date())
     const [modalOpened, setModalOpened] = useState(false)
@@ -106,6 +106,9 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column', 
         flex: 1, 
+    },
+    row: {
+        flexDirection: 'row',
     },
 })
 

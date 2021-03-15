@@ -40,7 +40,7 @@ const tabBarOptions = {
         backgroundColor: 'black'
     },
     activeTintColor: 'white',
-    inactiveTintColor: 'black   ',
+    inactiveTintColor: 'black',
     tabStyle: {
         //backgroundColor: colors.platinum,
         backgroundColor: '#822a78',

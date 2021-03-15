@@ -12,4 +12,6 @@ export const colors = {
     riflegreen: '#424240',
     charlestongreen: '#2A2B2A',
     smokyblack: '#0E0F0F',
+
+    backgroundPurple : '#822a78',
 }

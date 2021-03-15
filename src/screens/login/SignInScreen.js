@@ -92,7 +92,7 @@ const SignInScreen = ({navigation, user, loading, setError, error, loginUser}) =
                     </Animatable.View>
                 }
                 <View style={{width: device_width * 0.8}}>
-                    <Divider borderColor="black" orientation='center'>OR</Divider>
+                    <Divider borderColor="white" color='white' orientation='center'>OR</Divider>
                     <SocialIcon title='Sign in With Facebook' button type='facebook' />
                 </View>
             </KeyboardAvoidingView>

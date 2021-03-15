@@ -30,27 +30,26 @@ const SplashScreen = ({navigation, fetchUser, user, loading, error}) => {
                 !loading ?
                 <>
                     <Animatable.View animation='bounceIn' duration={2000} style={styles.header}>
-
-                    <SplashScreenHeader />
+                        <SplashScreenHeader />
                     </Animatable.View>
 
                     <View style={styles.footer}>
-                    <Button title="GET STARTED" 
-                            type='solid' 
-                            onPress={getStartedHandler}
-                            titleStyle={styles.buttonTitleStyle}
-                            buttonStyle={styles.buttonStyle}/>
+                         <Button title="GET STARTED" 
+                                type='solid' 
+                                onPress={getStartedHandler}
+                                titleStyle={styles.buttonTitleStyle}
+                                buttonStyle={styles.buttonStyle}/>
                     <View style={{marginTop: 10,}}></View>
-                    <Button title="SIGN IN" 
-                            type='solid' 
-                            onPress={signInHandler}
-                            titleStyle={{...styles.buttonTitleStyle, color: 'black'}}
-                            buttonStyle={styles.buttonStyle}/>
+                        <Button title="SIGN IN" 
+                                type='solid' 
+                                onPress={signInHandler}
+                                titleStyle={{...styles.buttonTitleStyle, color: 'black'}}
+                                buttonStyle={styles.buttonStyle}/>
                     </View>
                 </> 
                 :
-                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size='large' color={colors.riflegreen}/>
+                <View style={styles.loadingWrapper}>
+                    <ActivityIndicator size='large' color='white'/>
                 </View>
             }
         </SplashScreenContainer>
@@ -88,6 +87,11 @@ const styles = StyleSheet.create({
         flex: 1, 
         alignItems: 'center',
         /* justifyContent: 'center', */
+    },
+    loadingWrapper: {
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'center'
     },
     header: {
         alignItems:'center', 

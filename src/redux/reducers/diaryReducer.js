@@ -8,8 +8,6 @@ const initialState = {
 }
 
 const diaryReducer = (state = initialState, action) => {
-    console.log('action is: ');
-    console.log(action);
     switch (action.type) {
         case LOAD_ENTRIES:
             return {

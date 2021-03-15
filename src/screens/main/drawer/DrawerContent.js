@@ -66,7 +66,7 @@ const DrawerContent = ({user, logoutUser, ...props}) => {
                                                 inactiveBackgroundColor={colors.platinum}
                                                 activeBackgroundColor={colors.platinum}/>
                                     </View> */
-                                    <ListItem bottomDivider>
+                                    <ListItem bottomDivider key={idx}>
                                         <Icon name={item.icon} type={item.icontype} color='black' size={24}/>
                                         <ListItem.Content>
                                             <Text>{item.title}</Text>

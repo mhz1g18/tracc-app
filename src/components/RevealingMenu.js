@@ -1,10 +1,6 @@
-import React, { useState, useRef } from 'react'
-import { TouchableWithoutFeedback, Easing, View, Text } from 'react-native'
-import { colors } from '../colors';
-import * as Animatable from 'react-native-animatable'
+import React from 'react'
+import {  StyleSheet } from 'react-native'
 import { ListItem, BottomSheet, Avatar} from 'react-native-elements'
-import LinearGradient from 'react-native-linear-gradient'
-import TouchableScale from 'react-native-touchable-scale'
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -23,18 +19,18 @@ const RevealingMenu = ({isVisible, list, toggleModal, }) => {
 
     return (
         <BottomSheet isVisible={isVisible}
-                     containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}>
+                     containerStyle={styles.wrapper}>
             {list.map((l, i) => (
             <ListItem key={i} containerStyle={l.containerStyle} onPress={() => onPressHandle(l?.screenName, l?.screenParams)}>
-                {l.icon && <Avatar size={40} containerStyle={{marginTop: -10, marginBottom: -10, marginRight: -10}} icon={l.icon} rounded /> }
+                {l.icon && <Avatar size={40} containerStyle={styles.avatarContainer} icon={l.icon} rounded /> }
                 <ListItem.Content>
                 <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
                 </ListItem.Content>
             </ListItem>
             ))}
-            <ListItem containerStyle={{backgroundColor: '#F44336'}} onPress={toggleModal}>
+            <ListItem containerStyle={styles.cancelButton} onPress={toggleModal}>
                 <ListItem.Content>
-                    <ListItem.Title style={{color : 'white'}}>Cancel</ListItem.Title>
+                    <ListItem.Title style={styles.cancelButtonTitle}>Cancel</ListItem.Title>
                 </ListItem.Content>
             </ListItem>
       </BottomSheet>
@@ -42,13 +38,21 @@ const RevealingMenu = ({isVisible, list, toggleModal, }) => {
 
 }
 
-export default RevealingMenu
+const styles = StyleSheet.create({
+    wrapper: { 
+        backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' 
+    },
+    cancelButtonTitle: {
+        color: 'white',
+    },
+    cancelButton: {
+        backgroundColor: '#F44336',
+    },
+    avatarContainer: {
+        marginTop: -10, 
+        marginBottom: -10, 
+        marginRight: -10
+    },
+})
 
-const styles = {
-    container: {
-        height: 100,
-        width: 50,
-        borderRadius: 10,
-        backgroundColor: colors.offwhite
-    }
-}
+export default RevealingMenu

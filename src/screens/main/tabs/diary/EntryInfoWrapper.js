@@ -1,14 +1,16 @@
 import React from 'react'
+import { StyleSheet } from 'react-native'
 import { Text, View } from 'react-native'
 import { Avatar, Icon } from 'react-native-elements'
 import { colors } from '../../../../colors'
+import { convertNumToTime } from '../../../../utils/timeutils'
 
 const EntryInfoWrapper = ({entry}) => {
 
     return (
-        <View style={{flexDirection: 'row', height: '100%', }}>
-            <View style={{flex: 2,  justifyContent: 'center',  }}>
-                <View style={{flexDirection: 'row', paddingLeft: '8%',}}>
+        <View style={{...styles.row, height: '100%', }}>
+            <View style={styles.leftContainer}>
+                <View style={{...styles.row, paddingLeft: '8%',}}>
 
                 {
                 entry.type === 'ENTRY_SLEEP'
@@ -17,46 +19,48 @@ const EntryInfoWrapper = ({entry}) => {
                     <Avatar size={40}
                             rounded
                             icon={{name: 'bedtime', type: 'material', color: 'black', size: 35}}
-                            overlayContainerStyle={{height: 75, backgroundColor: colors.offwhite}}/>
-                    <Text style={{alignSelf: 'center', color: colors.offwhite, fontSize: 12, paddingTop: 5, marginLeft: 10, fontStyle: 'italic'}}>SLEEP</Text>
+                            overlayContainerStyle={styles.avatarOverlay}/>
+                    <Text style={styles.entryStyle}>SLEEP</Text>
                 </>
                 :
                 <>
                     <Avatar size={40}
                             rounded
                             icon={{name: 'local-restaurant', type: 'material', color: 'black', size: 35}}
-                            overlayContainerStyle={{height: 75, backgroundColor: colors.offwhite}}/>
-                    <Text style={{alignSelf: 'center', fontSize: 12, paddingTop: 5, marginLeft: 10, fontStyle: 'italic'}}>NUTRITION</Text>
+                            overlayContainerStyle={styles.avatarOverlay}/>
+                    <Text style={styles.entryStyle}>NUTRITION</Text>
                 </>
                 }
                 </View> 
             </View>
-            <View style={{flex: 2, borderWidth: 0, justifyContent: 'center', alignItems: 'center', }}>
+            <View style={styles.rightContainer}>
                 {
                 entry.type === 'ENTRY_SLEEP'
                 ?
                 <>
-                    <View style={{flexDirection: 'row', }}>
-                        <Icon type='material' name='access-time' size={20}/>
-                        <Text style={{paddingTop: 0, paddingLeft: 3, fontSize: 15,}}>{entry.duration} hours</Text>
+                    <View style={styles.row}>
+                        <Icon type='material' color='black' name='access-time' size={20}/>
+                        <Text style={styles.sleepLabel}>{convertNumToTime(entry.duration, true)}</Text>
                     </View>
-                    <View style={{flexDirection: 'row', }}>
-                        <Text style={{fontStyle: 'italic'}}>at {new Date(entry.timestamp).toTimeString().slice(0, -12)}</Text>
+                    <View style={styles.row}>
+                        <Text style={styles.timeStamp}>at {new Date(entry.timestamp).toTimeString().slice(0, -12)}</Text>
                     </View>
                 </>
                 :
                 <>
-                    <View style={{flexDirection: 'row', }}>
+                    <View style={styles.row}>
                         <Icon type='material-community' name='fire' size={20} style={{paddingTop: 2}}/>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 15,}}>{entry.calories.toFixed(2)} calories</Text>
+                        <Text style={styles.caloriesLabel}>{entry.calories.toFixed(1)} calories</Text>
                     </View>
-                    <View style={{flexDirection: 'row', }}>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.protein.toFixed(2)} p</Text>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.carbs.toFixed(2)} c</Text>
-                        <Text style={{paddingTop: 2, paddingLeft: 2, fontSize: 12,}}>{entry.fats.toFixed(2)} f</Text>
+                    <View style={styles.row}>
+                        <Text style={styles.nutritionSubLabel}>
+                            {entry.protein.toFixed(1)} p 
+                            {entry.carbs.toFixed(1)} c
+                            {entry.fats.toFixed(1)} f
+                        </Text>
                     </View>
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={{fontStyle: 'italic'}}>at {new Date(entry.timestamp).toTimeString().slice(0, -12)}</Text>
+                    <View style={styles.row}>
+                        <Text style={styles.timeStamp}>at {new Date(entry.timestamp).toTimeString().slice(0, -12)}</Text>
                     </View>
                 </>
                 }
@@ -64,5 +68,54 @@ const EntryInfoWrapper = ({entry}) => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    caloriesLabel: {
+        paddingTop: 2, 
+        paddingLeft: 2, 
+        fontSize: 15,
+    },
+    nutritionSubLabel: {
+        paddingTop: 2,
+        paddingLeft: 2,
+        fontSize: 12,
+    },
+    row: {
+        flexDirection: 'row'
+    },
+    avatarOverlay: {
+        height: 75, 
+        backgroundColor: colors.offwhite,
+    },
+    leftContainer: {
+        flex: 2,  
+        justifyContent: 'center', 
+    },
+    entryStyle: {
+        alignSelf: 'center', 
+        color: colors.offwhite, 
+        fontSize: 12, 
+        paddingTop: 5, 
+        marginLeft: 10, 
+        fontStyle: 'italic',
+    },
+    rightContainer: {
+        flex: 2, 
+        borderWidth: 0, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+    },
+    timeStamp: {
+        fontStyle: 'italic',
+    },
+    sleepLabel: {
+        paddingTop: 0,
+        paddingLeft: 3, 
+        fontSize: 15, 
+        color: 'black',
+    },
+
+
+})
 
 export default EntryInfoWrapper
