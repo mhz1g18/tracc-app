@@ -34,7 +34,7 @@ export const fetchUser = () => {
     return async function(dispatch) {
         console.log('fetching user from local storage');
 
-        setTimeout(async () => {
+     
             try {
                 const user = await AsyncStorage.getItem('traccUser')
                 if(user) {
@@ -48,7 +48,7 @@ export const fetchUser = () => {
                 console.log(e)
                 dispatch(loginUserError(e))
             }
-        }, 1500);
+       
     }
 }
 

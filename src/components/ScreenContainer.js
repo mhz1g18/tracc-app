@@ -30,7 +30,7 @@ const screen_height = Dimensions.get('window').height
 const styles = StyleSheet.create({
     splashScreenContainer: {
         height: screen_height, 
-        backgroundColor: 'white'
+        backgroundColor: '#ebebeb'
     },
     titleText: { 
         fontSize: 18, 

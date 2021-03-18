@@ -4,6 +4,7 @@ import { LOGIN_USER_ERROR, LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGOUT_USER_S
 const initialState = {
     loading: true,
     user: null,
+    token: '',
     error: '',
 }
 
@@ -21,6 +22,7 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 error: '',
                 user: action.payload,
+                token: action.payload.accessToken,
             }
         case LOGIN_USER_ERROR:
             return {
@@ -28,12 +30,14 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload,
                 user: null, 
+                token: '',
             }
         case LOGOUT_USER_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 user: null,
+                token: '',
             }
         default:
             return state

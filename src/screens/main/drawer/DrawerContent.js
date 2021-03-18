@@ -46,11 +46,11 @@ const DrawerContent = ({user, logoutUser, ...props}) => {
     }
 
     return (
-        <SplashScreenContainer>
+        <SplashScreenContainer style={{backgroundColor: 'white'}}>
             <View style={{flex: 1, paddingTop: 100}}>
                 <DrawerContentScrollView style={{width: '100%',}} {...props}>
                     <View style={{flex: 2, /* justifyContent: 'center', alignSelf: 'center',  */ }}>
-                        <View style={{flexDirection: 'row',  }}>
+                        <View style={{flexDirection: 'row',/*  backgroundColor: {'#42898c'}, */ alignItems: 'flex-end',  paddingLeft: 20 }}>
                             <Avatar source={{uri: 'https://cdn.iconscout.com/icon/free/png-256/koala-bear-lazy-honey-wild-animal-33903.png'}}
                                     size={90} />
                             <Text style={{color: colors.smokyblack, paddingBottom: 5, paddingLeft: 10, fontSize: 42, fontWeight: 'bold', fontFamily: 'sans-serif-thin'}}>trakk.</Text>
@@ -58,28 +58,16 @@ const DrawerContent = ({user, logoutUser, ...props}) => {
                         
                         {list.map((item, idx) => {
                                 return (
-                                   /*  <View style={{flexDirection: 'row', width: '100%', }}>
-                                        <DrawerItem label={item.title} key={idx}
-                                        style={{width: StyleSheet.absoluteFill.width}}
-                                                labelStyle={{marginLeft: -20, color: colors.smokyblack}}
-                                                icon={({focused, color, size}) => <Icon  name={item.icon} type={item.icontype} style={{paddingLeft: 20}} color={color} size={size} />}
-                                                inactiveBackgroundColor={colors.platinum}
-                                                activeBackgroundColor={colors.platinum}/>
-                                    </View> */
-                                    <ListItem bottomDivider key={idx}>
-                                        <Icon name={item.icon} type={item.icontype} color='black' size={24}/>
-                                        <ListItem.Content>
-                                            <Text>{item.title}</Text>
-                                        </ListItem.Content>
-                                    </ListItem>
+                                    <TouchableOpacity key={idx}  style={{flexDirection: 'row', width: '100%', paddingTop: 30, backgroundColor: 'transparent', }}>
+                                        <Icon name={item.icon} style={{marginLeft: 45, marginRight: 40,}} type={item.icontype} color={'#42898c'} size={24}/>
+                                        <Text style={{fontSize: 17, fontWeight: '900', color: '#42898c',}}>{item.title}</Text>
+                                    </TouchableOpacity  >
                                 )
                             })}
-                            <ListItem bottomDivider onPress={logoutHandler}>
-                                <Icon name='md-exit' type='ionicon' color='black' size={24}/>
-                                <ListItem.Content>
-                                    <Text>Logout</Text>
-                                </ListItem.Content>
-                            </ListItem>
+                            <TouchableOpacity style={{flexDirection: 'row', width: '100%', paddingTop: 20, backgroundColor: 'transparent', }} onPress={logoutHandler}>
+                                <Icon name='md-exit' style={{marginLeft: 45, marginRight: 40,}} type='ionicon' color={'#42898c'} size={24}/>
+                                <Text style={{fontSize: 17, fontWeight: '900', color: '#42898c',}}>Logout</Text>
+                            </TouchableOpacity>
                     </View>
                 </DrawerContentScrollView>
               {/*   <View>

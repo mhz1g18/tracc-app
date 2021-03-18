@@ -16,7 +16,7 @@ const Tab = createMaterialTopTabNavigator()
 const MainTabScreen = props => {
 
     return (
-        <Tab.Navigator initialRouteName='Home' tabBarOptions={tabBarOptions} tabBarPosition='bottom'>
+        <Tab.Navigator swipeEnabled={false} initialRouteName='Home' tabBarOptions={tabBarOptions} tabBarPosition='bottom'>
             <Tab.Screen name='Home' 
                         component={HomeTabScreen}
                         options={{tabBarIcon:  ({color, size}) => <Ionicons name='home' color={color} size={24} />}} />
@@ -40,10 +40,10 @@ const tabBarOptions = {
         backgroundColor: 'black'
     },
     activeTintColor: 'white',
-    inactiveTintColor: 'black',
+    inactiveTintColor: '#2e2e2e',
     tabStyle: {
         //backgroundColor: colors.platinum,
-        backgroundColor: '#822a78',
+        backgroundColor: colors.backgroundGreen,
     }
 }
 

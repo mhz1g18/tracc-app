@@ -73,7 +73,7 @@ const MainDiaryScreen = ({fetchEntries, diary, refreshEntries, ...props}) => {
     
     return (    
         <ScreenContainer rightComponent={<RightHeaderComponent onPressAddEntry={toggleModal} onPressCalendar={toggleCalendar}/>}
-                         headerBackgroundColor={'#822a78'}  
+                         headerBackgroundColor={colors.backgroundGreen}  
                    /*       refreshControl={<RefreshControl onRefresh={fetchData}/>} */
                          {...props}>
             <View style={styles.container}>

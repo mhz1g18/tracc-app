@@ -56,7 +56,7 @@ const MainNutrtionScreen = ({navigation, ...props}) => {
 
 
     return (
-        <ScreenContainer headerBackgroundColor={'#822a78'} 
+        <ScreenContainer headerBackgroundColor={colors.backgroundGreen} 
                          rightComponent={<RightHeaderComponent onPress={toggleModal} />}
                          {...props}>
             <SearchBar onChangeText={filterItemHandler} 

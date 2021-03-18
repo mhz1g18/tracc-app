@@ -52,8 +52,8 @@ const MainHomeScreenHeader = props => {
                                                     radius={30}
                                                     borderWidth={3}
                                                     color={x.progressColor || colors.peach}
-                                                    shadowColor='white'
-                                                    bgColor="#fff">
+                                                    shadowColor={colors.backgroundGreen}
+                                                    bgColor={'#e3fffa'}>
                                         {x.icon}
                                     </ProgressCircle>
                                     <View style={{flexDirection: 'row'}}>

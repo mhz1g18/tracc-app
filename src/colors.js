@@ -14,4 +14,6 @@ export const colors = {
     smokyblack: '#0E0F0F',
 
     backgroundPurple : '#822a78',
+
+    backgroundGreen: '#51c4c9',
 }

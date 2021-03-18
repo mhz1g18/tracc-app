@@ -21,18 +21,10 @@ const MainHomeScreen = ({...props}) => {
     // daily calories consumed so far - done
     // workout goal card
     // next workout card
-    
-    useEffect(() => {
-        setTimeout(() => {
-        console.log('heyeyeye');
-            
-        }, 100);
-    })
+  
 
     return (
-        <ScreenContainer headerBackgroundColor={colors.backgroundPurple} {...props} >
-            {/* <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1, paddingBottom: 15, flexDirection: 'column', }}> */}
-                
+        <ScreenContainer headerBackgroundColor={colors.backgroundGreen} {...props} >
                 <View style={{flexDirection: 'column', flex: 1, paddingBottom: 20, }}>
                     <View style={{flexDirection: 'column', paddingBottom: 25, paddingTop: 10,}}>
                         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems:'center', paddingBottom: 5  }}>

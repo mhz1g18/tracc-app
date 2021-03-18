@@ -23,6 +23,8 @@ const EntryInfoWrapper = ({entry}) => {
                     <Text style={styles.entryStyle}>SLEEP</Text>
                 </>
                 :
+                entry.type === 'ENTRY_NUTRITION'
+                ?
                 <>
                     <Avatar size={40}
                             rounded
@@ -30,10 +32,19 @@ const EntryInfoWrapper = ({entry}) => {
                             overlayContainerStyle={styles.avatarOverlay}/>
                     <Text style={styles.entryStyle}>NUTRITION</Text>
                 </>
+                :
+                <>
+                    <Avatar size={40}
+                            rounded
+                            icon={{name: 'local-restaurant', type: 'material', color: 'black', size: 35}}
+                            overlayContainerStyle={styles.avatarOverlay}/>
+                    <Text style={styles.entryStyle}>WORKOUTZ</Text>
+                </>
                 }
                 </View> 
             </View>
             <View style={styles.rightContainer}>
+                {console.log(entry)}
                 {
                 entry.type === 'ENTRY_SLEEP'
                 ?
@@ -47,6 +58,8 @@ const EntryInfoWrapper = ({entry}) => {
                     </View>
                 </>
                 :
+                entry.type === 'ENTRY_NUTRITION'
+                ?
                 <>
                     <View style={styles.row}>
                         <Icon type='material-community' name='fire' size={20} style={{paddingTop: 2}}/>
@@ -61,6 +74,12 @@ const EntryInfoWrapper = ({entry}) => {
                     </View>
                     <View style={styles.row}>
                         <Text style={styles.timeStamp}>at {new Date(entry.timestamp).toTimeString().slice(0, -12)}</Text>
+                    </View>
+                </>
+                :
+                <>
+                    <View style={styles.row}>
+                        <Text>{entry.exerciseList?.map(ex => ex.name)}</Text>
                     </View>
                 </>
                 }

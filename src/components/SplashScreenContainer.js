@@ -10,7 +10,7 @@ const SplashScreenContainer = ({children, style, statusBar}) => {
 
     return (
         <>
-        { statusBar && <StatusBar backgroundColor='#822a78'/> }
+        { statusBar && <StatusBar backgroundColor='#51c4c9'/> }
         <View 
             style={{...styles.container, ...style}} 
             colors={[colors.platinum, colors.platinum]} 
@@ -26,7 +26,7 @@ const SplashScreenContainer = ({children, style, statusBar}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
-        backgroundColor: '#822a78',
+        backgroundColor: colors.backgroundGreen,
         /* justifyContent: 'center', */
     },
 })

@@ -97,7 +97,7 @@ const ExpandableCard = ({item, onDelete}) => {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.container} onPress={onEditHandler}>
-                            <View style={{...styles.actionButtonWrapper, backgroundColor: '#383869', borderBottomWidth: StyleSheet.hairlineWidth, borderColor: 'grey'}}>
+                            <View style={{...styles.actionButtonWrapper, backgroundColor: colors.backgroundGreen, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: 'grey'}}>
                                 <Icon name='edit' type='feather' color='#d6d6d6' size={24} />
                             </View>
                         </TouchableOpacity>

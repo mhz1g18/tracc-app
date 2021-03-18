@@ -4,10 +4,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import InnerTabWrapper from './InnerTabWrapper'
 import { TabContext } from './TabContext'
 import axios from 'axios'
-import { SearchBar } from 'react-native-elements'
-import { LogBox } from 'react-native'
-import { LocaleConfig } from 'react-native-calendars'
-import { useFocusEffect } from '@react-navigation/core'
 
 const RecentNutritionScreen = ({navigation}) => {
 

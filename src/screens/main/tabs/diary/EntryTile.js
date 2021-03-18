@@ -11,6 +11,8 @@ import { useNavigation } from '@react-navigation/core'
 const cardColors = {
     'ENTRY_SLEEP' : ['#3680ff', '#174a9c'],
     'ENTRY_NUTRITION':  ['#FF9800', '#F44336'],
+    'ENTRY_WORKOUT':  ['#FF9800', '#F44336'],
+
 }
 
 const cardScreens = {
