@@ -73,10 +73,8 @@ const MainActivitiesScreen = ({fetchWorkouts, setWorkout, deleteWorkout, loading
       return (
         <View style={styles.qaContainer}>
             <TouchableOpacity style={[styles.button, styles.button3, { backgroundColor: '#c91e1e'}]} onPress={() => deleteItem(qaItem.id)}>
-
                 <Icon name='trash-alt' type='font-awesome-5' size={24} color='black'/>
           </TouchableOpacity>
-
       </View>
       );
   };

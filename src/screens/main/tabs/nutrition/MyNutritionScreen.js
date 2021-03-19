@@ -1,54 +1,41 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { API_BASE } from '../../../../utils/api'
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import React, { useEffect, useState } from 'react'
 import InnerTabWrapper from './InnerTabWrapper'
-import { TabContext } from './TabContext'
-import axios from 'axios'
-import { useFocusEffect, useIsFocused } from '@react-navigation/core'
+import { fetchNutritionAsync, refreshNutritionAsync } from '../../../../redux/actions/nutritionActions'
+import { connect } from 'react-redux'
 
-const MyNutritionScreen = ({navigation}) => {
-
-    const { search, } = useContext(TabContext)
-    const [data, setData] = useState({items: [], filteredItems: [], loading: false, refreshing: false, error: ''})
-
-    const fetchEntries = async (refreshing = false) => {
-        setData(data => ({...data, loading: !refreshing, refreshing: refreshing}))
-        const endpoint = `${API_BASE}/api/nutrition/`
-        const token = await AsyncStorage.getItem('traccToken')
-
-        try {
-            const results = await axios.get(endpoint, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            setData(data => ({...data, loading: false, refreshing: false, items: results.data, filteredItems: results.data}))
-
-        } catch(e) {
-            console.log(e);
-            setData(data => ({...data, loading: false, refreshing: false, error: e}))
-
-        }
-
-    }
-
-    const deleteHandler = useCallback(id => {
-        setData(data => ({...data, items: data.items.filter(item => item.id != id), filteredItems: data.filteredItems.filter(item => item.id != id)}))
-    }, [setData])
+const MyNutritionScreen = ({loading, filterValue, nutritionItems, fetchNutrition, refreshing, refreshNutrition, ...props}) => {
 
     useEffect(() => {
-        fetchEntries()
+        fetchNutrition('')
     }, [])
 
-    useEffect(() => {
-        const filteredItems = data.items.filter(item => item.name.toUpperCase().includes(search.toUpperCase()))
-        setData(data => ({...data, filteredItems}))
-    }, [search])
     
     return (
-        <InnerTabWrapper loading={data.loading} items={data.filteredItems} onItemDelete={deleteHandler} onRefresh={() => fetchEntries(true)}/>
+        <InnerTabWrapper 
+            loading={loading} 
+            items={nutritionItems.filter(item => item.name.toUpperCase().includes(filterValue.toUpperCase()))}
+            refreshing={refreshing}
+            onRefresh={() => refreshNutrition('')}
+            cardEditable={true} />
     )
 
 }
 
-export default MyNutritionScreen
+
+const mapStateToProps = state => {
+    return {
+        nutritionItems: state.nutrition.items,
+        loading: state.nutrition.loading,
+        refreshing: state.nutrition.refreshing,
+        filterValue: state.nutrition.filterValue,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchNutrition: query => dispatch(fetchNutritionAsync(query)), 
+        refreshNutrition: query => dispatch(refreshNutritionAsync(query))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyNutritionScreen)

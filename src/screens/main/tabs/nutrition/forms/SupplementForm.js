@@ -1,13 +1,21 @@
 import React, {useEffect, useState} from 'react'
-import {  Text } from 'react-native'
-import { View, StyleSheet } from 'react-native'
-import { Input, ListItem } from 'react-native-elements'
-import { colors } from '../../../../../colors'
+import { StyleSheet, Text, ScrollView } from 'react-native'
+import { Input, } from 'react-native-elements'
 import DropDownPicker from 'react-native-dropdown-picker';
-import Icon from 'react-native-vector-icons/Feather';
 import { units } from '../../../../../utils/units'
- 
+import TagInput from 'react-native-tags-input'
+
 const SupplementForm = ({setForm, form}) => {
+
+    const [tags, setTags] = useState({tag: '', tagsArray: form?.categories || []})
+
+    const updateCategories = category => {
+        setTags(category)
+    }
+
+    useEffect(() => {
+        setForm(form => ({...form, categories: tags.tagsArray}))
+    }, [tags.tagsArray.length])
 
     const nameInputHandler = text => {
         setForm(form => ({...form, name: text}))
@@ -18,28 +26,38 @@ const SupplementForm = ({setForm, form}) => {
         setForm(form => ({...form, unit: item.value}))
     }
 
-
     return (
-        <View style={styles.wrapper}>
-            <View style={{flexDirection: 'column', padding: 10, paddingTop: 20, borderBottomWidth: StyleSheet.hairlineWidth}}>
-                <Text style={styles.label}>Item name</Text>
-                 <Input placeholder='Food name' inputStyle={styles.inputStyle}  value={form?.name} onChangeText={nameInputHandler}
-                        inputContainerStyle={styles.inputContainerStyle}  />
-            </View>
+        <ScrollView contentContainerStyle={styles.wrapper}>
+            <Input placeholder='Supplement name' 
+                inputStyle={styles.inputStyle}  
+                value={form?.name} 
+                onChangeText={nameInputHandler}
+                containerStyle={styles.inputContainer} 
+                inputContainerStyle={styles.inputContainerStyle}  />
+            
+            <Text style={styles.label}>Measurement Unit</Text>
 
-                <Text style={{alignSelf: 'flex-start', fontSize: 16, paddingBottom:6}}>Measurement Unit</Text>
-                <DropDownPicker items={units}
+            <DropDownPicker items={units}
                             defaultValue={form?.unit || 'UNIT_MG'}
-                            containerStyle={{height: 35}}
-                            style={styles.pickerStyle}
+                            containerStyle={{height: 50,  width: '100%'}}
+                            style={{backgroundColor: '#fafafa',   borderBottomWidth: StyleSheet.hairlineWidth}}
                             itemStyle={{
+                                paddingLeft: 15, 
                                 justifyContent: 'flex-start'
                             }}
                             placeholder='Measurement Unit'
                             dropDownStyle={{backgroundColor: '#fafafa'}}
                             onChangeItem={unitInputHandler}/>
 
-        </View>
+            <Text style={styles.label}>Categories</Text>
+
+            <TagInput updateState={updateCategories} 
+                      tags={tags}
+                      inputStyle={styles.inputStyle}
+                      tagStyle={{backgroundColor: 'white', borderWidth: StyleSheet.hairlineWidth}}
+                      containerStyle={{paddingHorizontal: 0}}
+                      inputContainerStyle={{backgroundColor: 'white', borderBottomWidth: 0.5, opacity: 0.6}}/>
+        </ScrollView>
     )
 }
 
@@ -48,14 +66,13 @@ export default SupplementForm
 
 const styles = StyleSheet.create({
     wrapper: {
-        justifyContent: 'center', 
-        borderWidth: 0, 
-        alignItems: 'center',
-        width: '100%',
+        flex: 1,
     },
     label: {
-        fontSize: 16,
-        paddingLeft: 5
+        fontSize: 17,
+        padding: 15,
+        paddingBottom: 10,
+        paddingLeft: 5,
     },
     pickerStyle: {
         alignSelf: 'flex-start',
@@ -63,19 +80,26 @@ const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth
     },
     inputStyle: {
-        fontSize:14, 
-        paddingLeft: 10, 
-        height: 15, 
-        borderBottomWidth: 0
+        fontSize:17, 
+        height: 40, 
+        borderBottomWidth: 0,
+        width: '100%',
+
+    },
+    inputContainer: {
+        paddingHorizontal: 0,
     },
     inputContainerStyle: {
-        height: 30,
+        height: 60,
+        paddingHorizontal: 0,
         borderColor: 'black', 
-        marginLeft: -7,
+        borderBottomWidth: StyleSheet.hairlineWidth,
         backgroundColor: 'white', 
         opacity: 0.6, 
         borderRadius: 0, 
+        paddingLeft: 10,
         marginBottom: -12,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        width: '100%',
     },
 })

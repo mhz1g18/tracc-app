@@ -1,32 +1,33 @@
-import React, { useContext } from 'react'
-import { View,  Text, Pressable, StyleSheet, ActivityIndicator, Dimensions } from 'react-native'
+import React from 'react'
+import { View, StyleSheet, ActivityIndicator, Dimensions } from 'react-native'
 import { colors } from '../../../../colors'
 import ExpandableCard from '../../../../components/ExpandableCard'
-import SwipeableFlatList from 'react-native-swipeable-list'
-import { ScrollView } from 'react-native'
-import { TabContext } from './TabContext'
 import { FlatList } from 'react-native'
 
-const InnerTabWrapper = ({items, loading, onRefresh, onItemDelete}) => {
+const InnerTabWrapper = ({items, loading, refreshing, onRefresh, cardEditable}) => {
 
   const onRefreshHandler = () => {
-    onRefresh()
+    if(onRefresh) {
+      onRefresh()
+    }
   }
-    
-return (
-        <View style={styles.container}>
-        {loading ?
-            <View style={styles.loadingWrapper}>
-                <ActivityIndicator size='large' color={colors.smokyblack}/>
-            </View>
-        :
-        <FlatList data={items} contentContainerStyle={styles.listContent}
-                  keyExtractor={(item, idx) => `${item?.id}-${idx}`} 
-                  renderItem={({item}) => item && <ExpandableCard onDelete={onItemDelete} item={item}/>}
-                  onRefresh={onRefreshHandler}
-                  refreshing={false} />
+
+  return (
+      <View style={styles.container}>
+        {
+          loading ?
+          <View style={styles.loadingWrapper}>
+              <ActivityIndicator size='large' color={colors.smokyblack}/>
+          </View>
+          :
+          <FlatList data={items} 
+                    contentContainerStyle={styles.listContent}
+                    keyExtractor={(item, idx) => `${item?.id}-${idx}`} 
+                    renderItem={({item}) => item && <ExpandableCard item={item} cardEditable={cardEditable}/>}
+                    refreshing={refreshing}
+                    onRefresh={onRefreshHandler} />
         }
-        </View>
+      </View>
     )
 }
 

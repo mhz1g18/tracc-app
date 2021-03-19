@@ -6091,6 +6091,13 @@
   "resolved" "https://registry.npmjs.org/react-native-tab-view/-/react-native-tab-view-2.16.0.tgz"
   "version" "2.16.0"
 
+"react-native-tags-input@^1.0.10":
+  "integrity" "sha512-0uaHZXGZssBpdkYgW/eakk0sa6elVuYAPQePAc617MugoHj3uJtKchMEXe4rf20sKbLKvOnbWV8ku95yyQwkMw=="
+  "resolved" "https://registry.npmjs.org/react-native-tags-input/-/react-native-tags-input-1.0.10.tgz"
+  "version" "1.0.10"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "react-native-three-dots-loader@^1.0.1":
   "integrity" "sha512-5K/n89+UUm2QNeVum34pycelBhTsOTCtSk3e8Hn6BSXZWfhtJDma+RfdJYGw/uzO/YZH+mPteyS4lhMH/kbVyw=="
   "resolved" "https://registry.npmjs.org/react-native-three-dots-loader/-/react-native-three-dots-loader-1.0.1.tgz"

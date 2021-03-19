@@ -3,29 +3,24 @@ import { TouchableOpacity } from 'react-native'
 import { View, Text } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import { Avatar, ListItem, Icon, Badge } from 'react-native-elements';
-import { useSelector } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { colors } from '../colors'
 import { TabContext } from '../screens/main/tabs/nutrition/TabContext';
 import { useNavigation } from '@react-navigation/core';
 import { StyleSheet } from 'react-native';
 import * as Animatable from 'react-native-animatable'
+import { deleteNutritionAsync } from '../redux/actions/nutritionActions';
 
-const ExpandableCard = ({item, onDelete}) => {
+const ExpandableCard = ({item, deleteNutrition, cardEditable}) => {
 
     const [collaped, setCollaped] = useState(true)
     const navigation = useNavigation()
     const userId = useSelector(state => state.auth.user.id)
     const cardRef = useRef()
 
-    const { deleteItemHandler } = useContext(TabContext)
-    
     const onDeleteHandler = () => {
-        console.log(item.id)
-        cardRef.current.animate({ 0: { opacity: 1 }, 1: { opacity: 0 } })
-                       .then(() => {
-                           onDelete(item.id)
-                           deleteItemHandler(item.id)
-                       })
+        cardRef.current.bounceOutLeft(1000)
+                       .then(() => deleteNutrition(item.id))
     }
 
     const onEditHandler = () => {
@@ -41,76 +36,66 @@ const ExpandableCard = ({item, onDelete}) => {
             <Animatable.View ref={cardRef} style={styles.cardRow}>
                 <View style={styles.leftColumn}>
                     <ListItem  bottomDivider>
-                                {
-                                    item.type === 'SUPPLEMENT' 
-                                    ?
-                                    <Avatar icon={SUPPLEMENT_ICON} rounded/>
-                                    :
-                                    <Avatar icon={FOOD_ICON} rounded/>
-                                }
-                                <ListItem.Content>
-                                    <ListItem.Title>{item.name}</ListItem.Title>
+                    {
+                        item.type === 'SUPPLEMENT' 
+                        ?
+                        <Avatar icon={SUPPLEMENT_ICON} rounded/>
+                        :
+                        <Avatar icon={FOOD_ICON} rounded/>
+                    }
+                    <ListItem.Content>
+                        <ListItem.Title>{item.name}</ListItem.Title>
+                        {
+                        item.categories.length > 0 && 
+                        <ListItem.Subtitle>{item.categories.map((cat, idx) => `${cat} `)}</ListItem.Subtitle>
+                        }
+                        <Collapsible collapsed={collaped}>
+                            <View style={{marginTop: 5, }}>
+                            {
+                                item.type === 'FOOD'
+                                ?
+                                <>
+                                    <ListItem.Title>{item.calories} calories</ListItem.Title>
+                                    <ListItem.Subtitle>{item.carbs} carbs {item.protein} protein {item.fats} fat</ListItem.Subtitle>
+                                    <View>
                                     {
-                                    item.categories.length > 0 && 
-                                    <ListItem.Subtitle>{item.categories.map((cat, idx) => `${cat} `)}</ListItem.Subtitle>
+                                        item.micronutrients?.map(macro => {
+                                            return (
+                                                <React.Fragment key={`macro-${macro?.id}`}>
+                                                    <ListItem.Subtitle>
+                                                        {`${macro.name} - ${macro?.quantity}${macro.unit.substring(5)/*.tolwerCase() */}`}
+                                                    </ListItem.Subtitle>
+                                                </React.Fragment>)
+                                            })
                                     }
-                                    <Collapsible collapsed={collaped}>
-                                    
-                                        <View style={{marginTop: 5, }}>
-                                            {
-                                                item.type === 'FOOD'
-                                                ?
-                                                <>
-                                                <ListItem.Title>{item.calories} calories</ListItem.Title>
-                                                <ListItem.Subtitle>{item.carbs} carbs {item.protein} protein {item.fats} fat</ListItem.Subtitle>
-                                                <View >
-                                                {
-                                                    item.micronutrients?.map(macro => {
-                                                            return (
-                                                                <React.Fragment key={`macro-${macro?.id}`}>
-                                                                    <ListItem.Subtitle >
-                                                                        {`${macro.name} - ${macro?.quantity}${macro.unit.substring(5)/*.tolwerCase() */}`}
-                                                                    </ListItem.Subtitle>
-                                                                </React.Fragment>
-                                                            )
-                                                        
-                                                    })
-                                                }
-                                                </View>
-                                                </>
-                                                :
-                                                null
-                                            }
-                                            {item.description && <ListItem.Subtitle>{item.description}</ListItem.Subtitle>}
-                                            </View>
-                                    </Collapsible>
-                                </ListItem.Content>
-                    </ListItem>
-                </View>
-                {
-                    !collaped && item?.createdBy === userId
-                    &&
-                    <Animatable.View animation='bounceInRight' duration={1500} delay={0} style={styles.rightColumn}>
-                        <TouchableOpacity style={styles.container} onPress={onDeleteHandler}>
-                            <View style={{...styles.actionButtonWrapper, backgroundColor: '#b0213c' }}>
-                                <Icon name='trash-2' type='feather' color='#d6d6d6' size={24} />
+                                    </View>
+                                </>
+                                :
+                                null
+                            }
+                                {item.description && <ListItem.Subtitle>{item.description}</ListItem.Subtitle>}
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.container} onPress={onEditHandler}>
-                            <View style={{...styles.actionButtonWrapper, backgroundColor: colors.backgroundGreen, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: 'grey'}}>
-                                <Icon name='edit' type='feather' color='#d6d6d6' size={24} />
-                            </View>
-                        </TouchableOpacity>
-                     {/*    <TouchableOpacity style={{flex: 1}}>
-                            <View style={{flexDirection: 'row', flex: 1,backgroundColor: colors.smokyblack, justifyContent: 'center', alignItems: 'center',  }}>
-                                <Icon name='heart' type='feather' color='white' size={24} />
-                            </View>
-                        </TouchableOpacity> */}
-                        
-                    </Animatable.View>
-                }
+                        </Collapsible>
+                    </ListItem.Content>
+                </ListItem>
+            </View>
+            {
+                !collaped && item?.createdBy === userId && cardEditable
+                &&
+                <Animatable.View animation='bounceInDown' duration={1500} delay={0} style={styles.rightColumn}>
+                    <TouchableOpacity style={styles.container} onPress={onDeleteHandler}>
+                        <View style={{...styles.actionButtonWrapper, backgroundColor: '#b0213c' }}>
+                            <Icon name='trash-2' type='feather' color='#d6d6d6' size={24} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.container} onPress={onEditHandler}>
+                        <View style={{...styles.actionButtonWrapper, backgroundColor: colors.backgroundGreen, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: 'grey'}}>
+                            <Icon name='edit' type='feather' color='white' size={24} />
+                        </View>
+                    </TouchableOpacity>
+                </Animatable.View>
+            }
             </Animatable.View>
-           
         </TouchableOpacity>
     )
 }
@@ -144,4 +129,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ExpandableCard
+const mapDispatchToProps = dispatch => {
+    return {
+        deleteNutrition: id => dispatch(deleteNutritionAsync(id))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(ExpandableCard)

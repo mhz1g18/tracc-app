@@ -15,55 +15,30 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import SupplementForm from './forms/SupplementForm';
 import { Input, ListItem } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/core';
+import { addNutritionAsync, editNutritionAsync } from '../../../../redux/actions/nutritionActions';
+import { connect } from 'react-redux';
 
-const SupplementFormScreen = ({route, ...props}) => {   
+const SupplementFormScreen = ({route, submitNutrition, ...props}) => {   
 
     const [form, setForm] = useState(route.params?.item || {type: route.params.type})
-    const navigation = useNavigation()
 
-    const onSubmit = async () => {
-        console.log(form);
-        let endpoint = `${API_BASE}/api/nutrition/`
-        const token = await AsyncStorage.getItem('traccToken')
-        
-        try {
-            if(route.params.edit) {
-                endpoint += route.params.item.id
-                console.log(endpoint);
-                const results = await axios.put(endpoint, form, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                console.log(results.data);
-            } else {
-                const results = await axios.post(endpoint, form, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-            }
-    
-            navigation.pop() 
-        } catch(e) {
-            Alert.alert('Error ' + e)
-            console.log(e);
-        }
+    const onSubmit = () => {
+        submitNutrition(form)
+        props.navigation.pop()
     }
 
-    useEffect(() => {
-        if(route.params.item) {
-            setForm(route.params.item)
-        }
-    }, [route.params.item])
+    const onBackArrowPressHandler = () => {
+        props.navigation.pop()
+    }
 
     return (
-        <ScreenContainer headerBackgroundColor={colors.backgroundPurple} 
-                        rightComponent={
-                        <Icon onPress={onSubmit} containerStyle={{marginRight:10}} name='check' type='feather' color='white' size={24}/>}
+        <ScreenContainer headerBackgroundColor={colors.backgroundGreen} 
+                         leftComponent={{icon: 'arrow-back-ios', color: 'white', onPress: () => onBackArrowPressHandler()}}
+                         rightComponent={
+                         <Icon onPress={onSubmit} containerStyle={{marginRight:10}} name='check' type='feather' color='white' size={24}/>}
                          title={route.params.type.charAt(0) + route.params.type.slice(1).toLowerCase()}
                          {...props}>
-            <View style={styles.formWrapper}>
+            <View style={styles.wrapper}>
                 {
                     route.params.type === 'SUPPLEMENT'
                     ?
@@ -71,19 +46,24 @@ const SupplementFormScreen = ({route, ...props}) => {
                     :
                     <FoodForm setForm={setForm} form={form} />
                 }
-             
             </View>
-
         </ScreenContainer>
     )
 }
 
 const styles = StyleSheet.create({
-    formWrapper: {
-        alignItems: 'center', 
-        flex: 1, 
-        backgroundColor: 'white'
-    }
+    wrapper: {
+        flex: 1,
+    },
 })
  
-export default SupplementFormScreen
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        submitNutrition: ownProps.route?.params?.edit ?
+                         nutrition => dispatch(editNutritionAsync(nutrition))
+                         :
+                         nutrition => dispatch(addNutritionAsync(nutrition))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(SupplementFormScreen)

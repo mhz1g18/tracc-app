@@ -7,6 +7,7 @@ import SwipeableFlatList from 'react-native-swipeable-list';
 import { connect, useSelector } from 'react-redux'
 import { addWorkoutAsync, editWorkoutAsync, removeWorkoutExercise } from '../../../../redux/actions/activitiesActions'
 import { TouchableOpacity } from 'react-native'
+import ListFooterButton from '../../../../components/ListFooterButton'
 
 const darkColors = {
     background: '#121212',
@@ -23,19 +24,6 @@ const colorEmphasis = {
     disabled: 0.38,
 };
 
-const FooterButton = ({onPress}) => {
-    return (
-        <View style={{marginTop: 10}}>
-            <ListItem containerStyle={{backgroundColor: 'white',  paddingTop: 7, paddingBottom: 7,}} onPress={onPress}>
-            <Avatar icon={{name:'pluscircleo', type:'antdesign', size: 24, color: 'green',}}   />
-            <ListItem.Content>
-                <ListItem.Title style={{fontSize: 16}}>Add Exercise</ListItem.Title>
-            </ListItem.Content>
-        </ListItem>
-        </View>
-    )
-}
-
 const WorkoutScreen = ({route, workout, submitWorkout, removeExercise, ...props}) => {
 
     const [name, setName] = useState(workout?.name)
@@ -48,12 +36,13 @@ const WorkoutScreen = ({route, workout, submitWorkout, removeExercise, ...props}
 
     const onAddExerciseHandler = () => props.navigation.navigate('ExercisesScreen')
 
+    const onBackArrowPressHandler = () => props.navigation.pop()
+
     const QuickActions = (index, qaItem) => {
         return (
           <View style={styles.qaContainer}>
               <TouchableOpacity style={[styles.button, styles.button3, { backgroundColor: '#c91e1e'}]} onPress={() => removeExercise(qaItem.id)}>
                 <Icon name='trash-alt' type='font-awesome-5' size={24} color='black'/>
-                {/* <Text style={{color: 'white', fontSize: 16}}>Delete</Text> */}
               </TouchableOpacity>
         </View>
         );
@@ -62,7 +51,8 @@ const WorkoutScreen = ({route, workout, submitWorkout, removeExercise, ...props}
 
     return (
         <ScreenContainer headerBackgroundColor={colors.backgroundGreen}
-                        rightComponent={<Icon onPress={onSubmit} containerStyle={{marginRight:10}} name='check' type='feather' color='white' size={24}/>}
+                         leftComponent={{icon: 'arrow-back-ios', color: 'white', onPress: () => onBackArrowPressHandler()}}
+                         rightComponent={<Icon onPress={onSubmit} containerStyle={{marginRight:10}} name='check' type='feather' color='white' size={24}/>}
                          title='Workout'
                          {...props}>
             <View style={styles.wrapper}>
@@ -91,7 +81,7 @@ const WorkoutScreen = ({route, workout, submitWorkout, removeExercise, ...props}
                     renderQuickActions={({index, item}) => QuickActions(index, item)}
                     contentContainerStyle={styles.contentContainerStyle}
                     shouldBounceOnMount={true}
-                    ListFooterComponent={<FooterButton onPress={onAddExerciseHandler}/>} />
+                    ListFooterComponent={<ListFooterButton buttonTitle='Add exercise' onPress={onAddExerciseHandler}/>} />
 
             </View>
         </ScreenContainer>

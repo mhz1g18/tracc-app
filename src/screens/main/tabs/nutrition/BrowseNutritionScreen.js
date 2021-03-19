@@ -5,68 +5,41 @@ import InnerTabWrapper from './InnerTabWrapper'
 import { TabContext } from './TabContext'
 import axios from 'axios'
 import { SearchBar } from 'react-native-elements'
+import { connect } from 'react-redux'
+import { searchNutritionAsync } from '../../../../redux/actions/nutritionActions'
 
-const BrowseNutritionScreen = ({navigation}) => {
+const BrowseNutritionScreen = ({filterValue, loading, items, searchNutrition, navigation}) => {
 
-    const [data, setData] = useState({items: [], filteredItems: [],  error: '', loading: false})
-    const [searchVals, setSearchVals] = useState({name: '',})
-
-    const { search, } = useContext(TabContext)
-
-    const fetchEntries = async (searchVals) => {
-
-        if(searchVals.length < 2) {
-            setData(data => ({...data, loading: false}))
-            return
-        }
-
-        setData(data => ({...data, loading: true,}))
-        let endpoint = `${API_BASE}/api/nutrition/search?`
-
-        if(searchVals.name.length > 0) {
-            endpoint += `name=${searchVals.name}`
-        }
-
-        const token = await AsyncStorage.getItem('traccToken')
-
+    useEffect(() => {
         try {
-            const results = await axios.get(endpoint, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-
-            setData(data => ({...data, loading: false, error: '', items: results.data, filteredItems: results.data,}))
-
+            if(filterValue && filterValue.length>3) {
+                searchNutrition(filterValue)
+            }
         } catch(e) {
-            setData(data => ({...data, error: e}))
+            console.log(e);
         }
+    }, [filterValue])
 
-    }
-
-    const deleteHandler = useCallback(id => {
-        setData(data => ({...data, items: data.items.filter(item => item.id != id), filteredItems: data.filteredItems.filter(item => item.id != id)}))
-    }, [setData])
-
-
-    useEffect(() => {
-        fetchEntries(searchVals)
-    }, [searchVals])
-
-    useEffect(() => {
-        const filteredItems = data.items.filter(item => item.name.toUpperCase().includes(search.toUpperCase()))
-        setData(data => ({...data, filteredItems}))
-    }, [search])
-    
-    
     return (
-       <>
-             <SearchBar  placeholder='Search by name' showLoading
-                        lightTheme onChangeText={text => setSearchVals(vals => ({...vals, name: text}))} value={searchVals.name}
-                       round />
-            <InnerTabWrapper loading={data.loading} items={data.filteredItems} onItemDelete={deleteHandler} onRefresh={fetchEntries} />
-       </>
+        <InnerTabWrapper 
+            loading={loading} 
+            items={items}
+            refreshing={false} />
     )
 }
 
-export default BrowseNutritionScreen
+const mapStateToProps = state => {
+    return {
+        loading: state.nutrition.searchLoading,
+        items: state.nutrition.searchItems,
+        filterValue: state.nutrition.filterValue,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        searchNutrition: searchValue => dispatch(searchNutritionAsync(searchValue))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BrowseNutritionScreen)
