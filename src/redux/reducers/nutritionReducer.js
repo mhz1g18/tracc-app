@@ -1,4 +1,5 @@
-import { ADD_NUTRITION_ITEM, DELETE_NUTRITION_ITEM, EDIT_NUTRITION_ITEM, SEARCH_NUTRITION_ERROR, LOAD_NUTRITION, LOAD_NUTRITION_ERROR, LOAD_NUTRITION_SUCCESS, SEARCH_NUTRITION_SUCCESS, SEARCH_NUTRITION, SET_FILTER_VALUE, REFRESH_NUTRITION, REFRESH_NUTRITION_SUCCESS, GET_RECENT_NUTRITION, GET_RECENT_NUTRITION_SUCCESS, GET_RECENT_NUTRITION_ERROR } from "../actiontypes/nutritionActionTypes"
+import { FETCH_EXERCISES_ERROR } from "../actiontypes/acitivitiesActionTypes";
+import { ADD_NUTRITION_ITEM, DELETE_NUTRITION_ITEM, REMOVE_NUTRITION_FORM_MICRO, EDIT_NUTRITION_ITEM, SEARCH_NUTRITION_ERROR, LOAD_NUTRITION, LOAD_NUTRITION_ERROR, LOAD_NUTRITION_SUCCESS, SEARCH_NUTRITION_SUCCESS, SEARCH_NUTRITION, SET_FILTER_VALUE, REFRESH_NUTRITION, REFRESH_NUTRITION_SUCCESS, GET_RECENT_NUTRITION, GET_RECENT_NUTRITION_SUCCESS, GET_RECENT_NUTRITION_ERROR, SET_NUTRITION_FORM, SET_NUTRITION_FORM_MICROS, EDIT_NUTRITON_FORM_MICRO, ADD_NUTRITION_FORM_MICRO, FETCH_MICRONUTRIENTS, FETCH_MICRONUTRIENTS_SUCCESS } from "../actiontypes/nutritionActionTypes"
 
 const initialState = {
     items: [],
@@ -10,9 +11,13 @@ const initialState = {
     recentLoading: false,
     error: '',
     filterValue: '',
+    form: {},
+    micronutrients: [],
+    micronutrientsLoading: false,
 }
 
 const nutritionReducer = (state = initialState, action) => { 
+    console.log(action.type);
     switch(action.type) {
         case LOAD_NUTRITION: {
             return {
@@ -110,6 +115,65 @@ const nutritionReducer = (state = initialState, action) => {
                 ...state,
                 recentLoading: false,
                 error: action.payload,
+            }
+        }
+        case SET_NUTRITION_FORM: {
+            return {
+                ...state,
+                form: action.payload,
+            }
+        }
+        case EDIT_NUTRITON_FORM_MICRO: {
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    micronutrients: state.form.micronutrients.map(micro => micro.id === action.payload.id ? {...micro, quantity: action.payload.quantity} : micro),
+                    micronutrientIds: {...state.form.micronutrientIds, [action.payload.id]: action.payload.quantity}
+                }
+            }
+        }
+        case REMOVE_NUTRITION_FORM_MICRO: {
+            const { [action.payload]: toRemove, ...rest} = state.form.micronutrientIds
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    micronutrients: state.form.micronutrients.filter(micro => micro.id !== action.payload),
+                    micronutrientIds: rest,
+                }
+            }
+        }
+        case ADD_NUTRITION_FORM_MICRO: {
+            const micronutrient = action.payload
+            micronutrient.quantity = 200
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    micronutrients: [...state.form.micronutrients, micronutrient],
+                    micronutrientIds: {...state.form.micronutrientIds, [micronutrient.id]: micronutrient.quantity},
+                }
+            }
+        }
+        case FETCH_MICRONUTRIENTS: {
+            return {
+                ...state,
+                micronutrientsLoading: true,
+            }
+        }
+        case FETCH_MICRONUTRIENTS_SUCCESS: {
+            return {
+                ...state,
+                micronutrients: action.payload,
+                micronutrientsLoading: false,
+            }
+        }
+        case FETCH_EXERCISES_ERROR: {
+            return {
+                ...state,
+                error: '',
+                micronutrientsLoading: false,
             }
         }
         default:

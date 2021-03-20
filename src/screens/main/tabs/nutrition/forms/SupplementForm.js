@@ -4,33 +4,33 @@ import { Input, } from 'react-native-elements'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { units } from '../../../../../utils/units'
 import TagInput from 'react-native-tags-input'
+import { setNutritionForm } from '../../../../../redux/actions/nutritionActions';
+import { connect } from 'react-redux';
 
-const SupplementForm = ({setForm, form}) => {
-
-    const [tags, setTags] = useState({tag: '', tagsArray: form?.categories || []})
+const SupplementForm = ({nutritionForm, setForm, }) => { 
+    const [tags, setTags] = useState({tag: '', tagsArray: nutritionForm?.categories || []})
 
     const updateCategories = category => {
         setTags(category)
     }
 
     useEffect(() => {
-        setForm(form => ({...form, categories: tags.tagsArray}))
+        setForm({...nutritionForm, categories: tags.tagsArray})
     }, [tags.tagsArray.length])
 
     const nameInputHandler = text => {
-        setForm(form => ({...form, name: text}))
+        setForm({...nutritionForm, name: text})
     }
 
     const unitInputHandler = item => {
-        console.log(item.value);
-        setForm(form => ({...form, unit: item.value}))
+        setForm({...nutritionForm, unit: item.value})
     }
 
     return (
         <ScrollView contentContainerStyle={styles.wrapper}>
             <Input placeholder='Supplement name' 
                 inputStyle={styles.inputStyle}  
-                value={form?.name} 
+                value={nutritionForm?.name} 
                 onChangeText={nameInputHandler}
                 containerStyle={styles.inputContainer} 
                 inputContainerStyle={styles.inputContainerStyle}  />
@@ -38,7 +38,7 @@ const SupplementForm = ({setForm, form}) => {
             <Text style={styles.label}>Measurement Unit</Text>
 
             <DropDownPicker items={units}
-                            defaultValue={form?.unit || 'UNIT_MG'}
+                            defaultValue={nutritionForm?.unit || 'UNIT_MG'}
                             containerStyle={{height: 50,  width: '100%'}}
                             style={{backgroundColor: '#fafafa',   borderBottomWidth: StyleSheet.hairlineWidth}}
                             itemStyle={{
@@ -61,7 +61,19 @@ const SupplementForm = ({setForm, form}) => {
     )
 }
 
-export default SupplementForm
+const mapStateToProps = state => {
+    return {
+        nutritionForm: state.nutrition.form,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setForm: form => dispatch(setNutritionForm(form))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SupplementForm)
 
 
 const styles = StyleSheet.create({

@@ -4,82 +4,43 @@ import { Input, Icon, ListItem } from 'react-native-elements'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { units } from '../../../../../utils/units'
 import TagInput from 'react-native-tags-input'
-import { PieChart } from 'react-native-chart-kit';
 import ListFooterButton from '../../../../../components/ListFooterButton';
 import SwipeableFlatList from 'react-native-swipeable-list';
-import { SafeAreaView } from 'react-native';
-import { State } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import { editNutritionFormMicro, setNutritionForm, removeNutritionFormMicro } from '../../../../../redux/actions/nutritionActions';
+import { useNavigation } from '@react-navigation/core';
 
-const FoodForm = ({setForm, form}) => {
+const FoodForm = ({setForm, nutritionForm, editMicroQuantity, removeMicro }) => {
 
-    const [tags, setTags] = useState({tag: '', tagsArray: form?.categories || []})
-    const [micronutrientIds, setMicronutrientIds] = useState({})
+    const [tags, setTags] = useState({tag: '', tagsArray: nutritionForm?.categories || []})
+    const navigation = useNavigation()
 
-    console.log(form.micronutrients);
-    
     const updateCategories = category => {
         setTags(category)
     }
 
     useEffect(() => {
-        setForm(form => ({...form, categories: tags.tagsArray}))
+        setForm({...nutritionForm, categories: tags.tagsArray})
     }, [tags.tagsArray.length])
 
     const nameInputHandler = (text, field) => {
-        setForm(form => ({...form, [field]: text}))
+        setForm({...nutritionForm, [field]: text})
     }
 
     const unitInputHandler = item => {
-        setForm(form => ({...form, unit: item.value}))
+        setForm({...nutritionForm, unit: item.value})
     }
 
-    const addMicronutrientHandler = micronutrient => {
-        setForm(form => ({...form, micronutrients: [...form.micronutrients, micronutrient]}))
-    }
-
-    const removeMicronutrient = id => {
-        let {[id]: omit, remainingMicros} = form.micronutrientIds
-        setForm(form => ({
-            ...form,
-            micronutrientIds: remainingMicros,
-            micronutrients: form.micronutrients.filter(micro => micro.id !== id)
-        }))
-    }
 
     const changeMicroQuantity = (id, quantity) => {
-        setForm(form => ({
-            ...form,
-            micronutrientIds: {...form.micronutrientIds, [id]: parseInt(quantity)},
-            micronutrients: form.micronutrients.map(micro => {
-                if(micro.id === id) {
-                    return {
-                        ...micro,
-                        quantity: parseInt(quantity)
-                    }
-                }
-
-                return micro
-            })
-        }))
+        editMicroQuantity(id, quantity) 
     }
-
-    useEffect(() => {
-        if(Array.isArray(form?.micronutrients)) {
-            const micros = {}
-            for(let i = 0; i < form.micronutrients.length; i++) {
-                const micro = form.micronutrients[i]
-                micros[micro.id] = micro.quantity
-            }
-
-            setForm(form => ({...form, micronutrientIds: micros}))
-        }
-    }, [form?.mironutrients])
 
     const QuickActions = (index, qaItem) => {
         return (
           <View style={{flex: 1,flexDirection: 'row',justifyContent: 'flex-end',}}>
               <TouchableOpacity style={[{width: 80, alignItems: 'center',justifyContent: 'center', backgroundColor: '#c91e1e'}]}
-                                onPress={() => removeMicronutrient(qaItem.id)}>
+                                onPress={() => removeMicro(qaItem.id)}>
                 <Icon name='trash-alt' type='font-awesome-5' size={24} color='black'/>
               </TouchableOpacity>
         </View>
@@ -90,7 +51,7 @@ const FoodForm = ({setForm, form}) => {
         <ScrollView style={styles.wrapper} contentContainerStyle={{paddingBottom: 1000}}>
             <Input placeholder='Food name' 
                     inputStyle={styles.inputStyle}  
-                    value={form?.name} 
+                    value={nutritionForm?.name} 
                    onChangeText={text => nameInputHandler(text, 'name')}
                    containerStyle={styles.inputContainer}
                    inputContainerStyle={styles.inputContainerStyle}  />
@@ -109,7 +70,7 @@ const FoodForm = ({setForm, form}) => {
                     <Input placeholder='Calories' 
                             inputStyle={styles.inputStyle} 
                            keyboardType='numeric' 
-                           value={form?.calories?.toString()} 
+                           value={nutritionForm?.calories?.toString()} 
                            onChangeText={text => nameInputHandler(text, 'calories')}
                            inputContainerStyle={{...styles.inputContainerStyle, height: 40}}  />
                 </View>
@@ -118,14 +79,14 @@ const FoodForm = ({setForm, form}) => {
                     <Input placeholder='Quantity' 
                             inputStyle={styles.inputStyle} 
                            keyboardType='numeric' 
-                           value={form?.quantity?.toString()} 
+                           value={nutritionForm?.quantity?.toString()} 
                            onChangeText={text => nameInputHandler(text, 'quantity')}
                            inputContainerStyle={{...styles.inputContainerStyle, height: 40}}  />
                 </View>
                 <View style={styles.column}>
                     <Text style={styles.label}>Unit</Text>
                     <DropDownPicker items={units}
-                                    defaultValue={form?.unit || 'UNIT_G'}
+                                    defaultValue={nutritionForm?.unit || 'UNIT_G'}
                                     containerStyle={{height: 40,  width: '98%', paddingLeft: 4}}
                                     style={{backgroundColor: '#fafafa',   borderBottomWidth: StyleSheet.hairlineWidth}}
                                     itemStyle={{
@@ -146,7 +107,7 @@ const FoodForm = ({setForm, form}) => {
                     <Input placeholder='Protein' 
                             inputStyle={styles.inputStyle} 
                             keyboardType='numeric' 
-                            value={form?.protein?.toString()} 
+                            value={nutritionForm?.protein?.toString()} 
                             onChangeText={text => nameInputHandler(text, 'protein')}
                             inputContainerStyle={{...styles.inputContainerStyle, height: 40,}}  />
                 </View>
@@ -155,7 +116,7 @@ const FoodForm = ({setForm, form}) => {
                     <Input placeholder='Fats' 
                             inputStyle={styles.inputStyle} 
                             keyboardType='numeric' 
-                            value={form?.fats?.toString()} 
+                            value={nutritionForm?.fats?.toString()} 
                             onChangeText={text => nameInputHandler(text, 'fats')}
                             inputContainerStyle={{...styles.inputContainerStyle, height: 40}}  />
                 </View>
@@ -164,7 +125,7 @@ const FoodForm = ({setForm, form}) => {
                     <Input placeholder='Carbs'  
                             inputStyle={styles.inputStyle} 
                             keyboardType='numeric' 
-                            value={form?.carbs?.toString()} 
+                            value={nutritionForm?.carbs?.toString()} 
                             onChangeText={text => nameInputHandler(text, 'carbs')}
                             inputContainerStyle={{...styles.inputContainerStyle, height: 40}}  />
                 </View>
@@ -172,21 +133,22 @@ const FoodForm = ({setForm, form}) => {
                 <Text style={styles.label}>Micronutrients</Text>
                 <SwipeableFlatList 
                     keyExtractor={(item, idx) => item?.id?.toString()+idx || idx.toString()}
-                    data={form?.micronutrients}
+                    data={nutritionForm?.micronutrients}
                     renderItem={({item}) => {
                       return (
                         <ListItem containerStyle={{backgroundColor: 'white', }} bottomDivider>
                             <ListItem.Content>
-                                <View style={{flexDirection: 'row',  justifyContent: 'space-evenly'}}>
                                 <ListItem.Title style={{fontSize: 17,}}>{item.name}</ListItem.Title>
-                                <Input placeholder='Quantity' 
-                                        inputStyle={styles.inputStyle} 
-                                        keyboardType='numeric' 
-                                        value={item?.quantity?.toString()} 
-                                        onChangeText={text =>changeMicroQuantity(item.id, text)}
-                                        inputContainerStyle={{...styles.inputContainerStyle, height: 40}}  />
-                                </View>
                             </ListItem.Content>
+                            <View style={{flexDirection: 'column', flex: 1}}>
+                                        <Input placeholder='Quantity' 
+                                            inputStyle={{...styles.inputStyle, width: '50%', paddingVertical: 0}} 
+                                            keyboardType='numeric' 
+                                            value={item?.quantity?.toString()} 
+                                            onChangeText={text =>changeMicroQuantity(item.id, text)}
+                                            inputContainerStyle={{...styles.inputContainerStyle, height: 40, paddingVertical: 0}}  />
+                            </View>
+                            <Text>haa</Text>
                         </ListItem>
                       )
                     }}
@@ -194,13 +156,27 @@ const FoodForm = ({setForm, form}) => {
                     renderQuickActions={({index, item}) => QuickActions(index, item)}
                     contentContainerStyle={styles.contentContainerStyle}
                     shouldBounceOnMount={true}
-                    ListFooterComponent={<ListFooterButton buttonTitle='Add micronutrient' />} />
+                    ListFooterComponent={<ListFooterButton buttonTitle='Add micronutrient' onPress={() => navigation.navigate('MicronutrientsScreen')} />} />
 
         </ScrollView>
     )
 }
 
-export default FoodForm
+const mapStateToProps = state => {
+    return {
+        nutritionForm: state.nutrition.form,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setForm: form => dispatch(setNutritionForm(form)),
+        editMicroQuantity: (id, quantity) => dispatch(editNutritionFormMicro(id, quantity)),
+        removeMicro: id => dispatch(removeNutritionFormMicro(id)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FoodForm)
 
 
 const styles = StyleSheet.create({
