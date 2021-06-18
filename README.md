@@ -1,9 +1,6 @@
 # Tracc
 # Mobile Application built with React Native
 
-This is the front-end of the application I created for my dissertation  
-at the University of Southampton
-
 The purpose of the application is to serve as a  
 lifestyle diary for its' users. Users havea a diary,  
 where they can log ativities such as training, nutrition, and sleep.
